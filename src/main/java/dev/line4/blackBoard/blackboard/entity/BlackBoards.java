@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import dev.line4.blackBoard.utils.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +36,7 @@ url text
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BLACKBOARD")
-public class BlackBoards {
+public class BlackBoards extends BaseEntity {
     @Id
     private String id;
     @Column(length = 50)

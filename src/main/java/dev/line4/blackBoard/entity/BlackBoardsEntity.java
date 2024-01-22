@@ -2,6 +2,8 @@ package dev.line4.blackBoard.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.line4.blackBoard.letter.entity.Letters;
+import dev.line4.blackBoard.utils.entity.BaseEntity;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ url text
 */
 
 @Entity
-public class BlackBoardsEntity {
+public class BlackBoardsEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
