@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import dev.line4.blackBoard.utils.entity.BaseEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "LETTER_STICKERS")
-public class LetterStickers {
+public class LetterStickers extends BaseEntity {
 
     @Id
     @Column(name = "letter_sticker_id")
