@@ -33,6 +33,13 @@ public class BlackBoardController {
         return result;
     }
 
+    @GetMapping("checkDuplicate")
+    @ApiOperation(value = "userId 중복 확인", notes="userId를 입력받은 후 호출합니다.")
+    public ResponseEntity<ApiResponse<?>> checkDuplicateUserId(@RequestParam("userId") String userId ) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.checkDuplicateUserId(userId);
+        return result;
+    }
+
     // TODO: 리팩토링
     /*
     @GetMapping("/blackboard")
