@@ -30,14 +30,6 @@ public class LetterController {
 
     @PostMapping("letter")
     @ApiOperation(value = "편지 생성", notes = "편지를 생성할 때 호출합니다.")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "{\n"
-                    + "    \"url\": \"c89f0fa5-607\"\n"
-                    + "}"),
-            @ApiResponse(code = 404, message = "{\n}"
-                    + "    \"message\": \"존재하지 않는 URL 입니다.\"\n"
-                    + "}")
-    })
     public ResponseEntity<?> createLetter(@RequestBody LetterReqDto dto,
                                           @RequestParam("id") String blackboardId) {
         LetterResDto result = letterService.createLetter(dto, blackboardId);
@@ -46,9 +38,6 @@ public class LetterController {
 
     @GetMapping("visitor/{id}")
     @ApiOperation(value = "방문자 조회", notes = "칠판에 방문한 사람들을 조회할 때 호출합니다.")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "칠판 아이디", required = true, dataType = "string", paramType = "path", example = "c89f0fa5-607"),
-    })
     public ResponseEntity<?> readVisitor(@RequestParam("id") String blackboardId) {
         VisitorResDto result = letterService.readVisitor(blackboardId);
         return ResponseEntity.status(HttpStatus.OK).body(result);
