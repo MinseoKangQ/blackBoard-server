@@ -1,22 +1,9 @@
 package dev.line4.blackBoard.blackboardsticker.entity;
 
-/*
-id long
-num long
-position_x integer
-position_y
-board_id
- */
-
+import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import javax.persistence.*;
 
 import dev.line4.blackBoard.utils.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -33,14 +20,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "BLACKBOARD_STICKERS")
 public class BlackBoardStickers extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private Long num;
+
     @Column(name = "position_x")
     private double positionX;
+
     @Column(name = "position_y")
     private double positionY;
+
     @Column(name = "img")
     private Long img;
 
@@ -53,7 +45,19 @@ public class BlackBoardStickers extends BaseEntity {
     @Column(name = "mirror")
     private Long mirror;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
-    private BlackBoards boardId;
+    private BlackBoards board;
+
+    // 생성 메서드
+    public static BlackBoardStickers createBlackBoardSticker(CreateBlackBoardDto.Req.Sticker req) {
+        return req.toEntity();
+    }
+
+    // 연관관계 편의 메서드
+    public void setBlackBoard(BlackBoards blackBoard) {
+        this.board = blackBoard;
+        board.getBlackBoardStickers().add(this);
+    }
+
 }
