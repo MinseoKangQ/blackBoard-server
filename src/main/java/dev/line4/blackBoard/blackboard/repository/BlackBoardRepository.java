@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface BlackBoardRepository extends JpaRepository<BlackBoards, String> {
-    Optional<BlackBoards> findBlackBoardsByUserId(String userId);
+    boolean existsByUserId(String userId);
 }
