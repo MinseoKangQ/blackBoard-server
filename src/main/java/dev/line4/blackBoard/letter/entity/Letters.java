@@ -2,6 +2,7 @@ package dev.line4.blackBoard.letter.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
+import dev.line4.blackBoard.letter.dto.CreateLetterDto;
 import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,11 @@ public class Letters extends BaseEntity {
                 ", align='" + align + '\'' +
                 ", stickers=" + stickers +
                 '}';
+    }
+
+    // 생성 메서드
+    public static Letters createLetter(CreateLetterDto.Req.Letter req) {
+        return req.toEntity();
     }
 
     // 연관관계 메서드

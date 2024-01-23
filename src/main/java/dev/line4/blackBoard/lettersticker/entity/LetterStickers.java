@@ -1,6 +1,7 @@
 package dev.line4.blackBoard.lettersticker.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.line4.blackBoard.letter.dto.CreateLetterDto;
 import dev.line4.blackBoard.letter.entity.Letters;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -94,5 +95,10 @@ public class LetterStickers extends BaseEntity {
                 ", mirror=" + mirror +
                 ", letter=" + letter +
                 '}';
+    }
+
+    // 생성 메서드
+    public static LetterStickers createLetterSticker(CreateLetterDto.Req.Sticker dto) {
+        return dto.toEntity();
     }
 }

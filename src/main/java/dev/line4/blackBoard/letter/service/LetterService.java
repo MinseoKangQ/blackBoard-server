@@ -1,11 +1,12 @@
 package dev.line4.blackBoard.letter.service;
 
-import dev.line4.blackBoard.letter.dto.LetterReqDto;
-import dev.line4.blackBoard.letter.dto.LetterResDto;
+import dev.line4.blackBoard.letter.dto.CreateLetterDto;
 import dev.line4.blackBoard.letter.dto.VisitorResDto;
+import dev.line4.blackBoard.utils.response.ApiResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface LetterService {
-    LetterResDto createLetter(LetterReqDto dto, String blackboardId);
+    ResponseEntity<ApiResponse<?>> createLetter(String userId, CreateLetterDto.Req req);
 
     VisitorResDto readVisitor(String blackboardId);
 }
