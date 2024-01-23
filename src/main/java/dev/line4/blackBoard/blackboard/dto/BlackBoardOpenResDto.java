@@ -18,8 +18,8 @@ public class BlackBoardOpenResDto {
     @ApiModelProperty(notes = "칠판 소개", example = "아기사자들 모두 마지막까지 화이팅!")
     private String introduction;
 
-    @ApiModelProperty(notes = "졸업 일시", example = "2023-11-11 17:00:00")
-    private String graduateDate;
+    @ApiModelProperty(notes = "칠판 공개 일시", example = "2023-11-11 17:00:00")
+    private String openDate;
 
     @ApiModelProperty(notes = "칠판 스티커", example = "[\n"
             + "        {\n"
