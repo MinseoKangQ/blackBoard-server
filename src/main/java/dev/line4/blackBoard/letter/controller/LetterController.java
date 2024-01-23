@@ -7,11 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
@@ -29,14 +25,11 @@ public class LetterController {
         return result;
     }
 
-    // TODO: 리팩토링
-    /*
-    @GetMapping("visitor/{id}")
-    @ApiOperation(value = "방문자 조회", notes = "칠판에 방문한 사람들을 조회할 때 호출합니다.")
-    public ResponseEntity<?> readVisitor(@RequestParam("id") String blackboardId) {
-        VisitorResDto result = letterService.readVisitor(blackboardId);
-        return ResponseEntity.status(HttpStatus.OK).body(result);
+    @GetMapping("writer")
+    @ApiOperation(value = "편지 작성자 조회", notes = "칠판에 편지를 작성한 사람들을 조회할 때 호출합니다.")
+    public ResponseEntity<ApiResponse<?>> readWriter(@RequestParam("userId") String userId) {
+        ResponseEntity<ApiResponse<?>> result = letterService.readWriter(userId);
+        return result;
     }
-     */
 
 }

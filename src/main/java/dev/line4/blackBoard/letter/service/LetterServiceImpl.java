@@ -4,7 +4,7 @@ import dev.line4.blackBoard.blackboard.entity.BlackBoards;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
 import dev.line4.blackBoard.blackboardsticker.repository.BlackBoardStickerRepository;
 import dev.line4.blackBoard.letter.dto.CreateLetterDto;
-import dev.line4.blackBoard.letter.dto.VisitorResDto;
+import dev.line4.blackBoard.letter.dto.ReadWriterDto;
 import dev.line4.blackBoard.letter.entity.Letters;
 import dev.line4.blackBoard.letter.repository.LetterRepository;
 import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
@@ -68,31 +68,31 @@ public class LetterServiceImpl implements LetterService {
     }
 
     @Override
-    public VisitorResDto readVisitor(String blackboardId) {
+    public ResponseEntity<ApiResponse<?>> readWriter(String userId) {
 
-        // 칠판 찾기
-        Optional<BlackBoards> existingBlackBoard = blackBoardRepository.findById(blackboardId);
-
-        if (existingBlackBoard.isEmpty()) {
-            System.out.println("칠판이 존재하지 않음");
-            return null;
+        // userId 로 칠판 찾기, 없으면 에러 응답
+        Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
+        if(findBlackBoard.isEmpty()) {
+            ApiResponse<Object> res = ApiResponse.fail(404, "칠판을 찾을 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
-        // 찾은 칠판 엔티티로 letter list 조회
-        List<Letters> letters = existingBlackBoard.get().getLetters();
+        // 편지들 찾기
+        BlackBoards foundBlackBoard = findBlackBoard.get();
+        List<Letters> letters = foundBlackBoard.getLetters();
 
-        // letter 의 nickname 만 추출해서 리스터트에 담기
-        List<String> nicknames = letters.stream()
+        // 작성자만 추출
+        List<String> writers = letters.stream()
                 .map(Letters::getNickname)
                 .collect(Collectors.toList());
 
-        // 리턴값 빌드
-        VisitorResDto resDto = VisitorResDto.builder()
-                .nickname(nicknames)
+        // 응답할 데이터 생성
+        ReadWriterDto.Res resData = ReadWriterDto.Res.builder()
+                .writers(writers)
                 .build();
 
-        return resDto;
-
+        ApiResponse<ReadWriterDto.Res> res = ApiResponse.success(resData, "편지 작성자가 정상적으로 조회되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
 }
