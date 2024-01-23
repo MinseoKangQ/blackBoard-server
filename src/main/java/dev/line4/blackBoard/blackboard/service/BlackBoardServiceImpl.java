@@ -77,7 +77,7 @@ public class BlackBoardServiceImpl implements BlackBoardService{
 //        return BlackBoardOpenResDto.builder()
 //                .title(blackBoard.getTitle())
 //                .introduction(blackBoard.getIntroduction())
-//                .graduateDate(blackBoard.getGraduateDate())
+//                .openDate(blackBoard.getOpenDate())
 //                .stickers(boardStickers)
 //                .letters(letters)
 //                .build();

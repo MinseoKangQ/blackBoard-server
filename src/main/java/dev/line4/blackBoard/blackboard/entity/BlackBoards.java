@@ -21,7 +21,7 @@ id long
 title varchar
 introduction varchar
 email varchar
-graduate_date localdatetime
+open_date localdatetime
 url text
 
 */
@@ -46,8 +46,8 @@ public class BlackBoards extends BaseEntity {
     @Column(length = 255)
     private String userId;
 
-    @Column(name = "graduate_date")
-    private String graduateDate;
+    @Column(name = "open_date")
+    private String openDate;
 
     @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

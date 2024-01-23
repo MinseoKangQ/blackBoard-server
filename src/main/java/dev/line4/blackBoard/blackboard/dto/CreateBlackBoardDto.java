@@ -24,14 +24,14 @@ public class CreateBlackBoardDto {
             private String title;
             private String introduction;
             private String userId;
-            private String graduateDate;
+            private String openDate;
 
             public BlackBoards toEntity() {
                 return BlackBoards.builder()
                         .title(this.title)
                         .introduction(this.introduction)
                         .userId(this.userId)
-                        .graduateDate(this.graduateDate)
+                        .openDate(this.openDate)
                         .build();
             }
         }
