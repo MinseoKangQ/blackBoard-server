@@ -91,4 +91,10 @@ public class Letters extends BaseEntity {
                 ", stickers=" + stickers +
                 '}';
     }
+
+    // 연관관계 메서드
+    public void setBlackBoard(BlackBoards blackBoard) {
+        this.blackboard = blackBoard;
+        blackBoard.getLetters().add(this);
+    }
 }

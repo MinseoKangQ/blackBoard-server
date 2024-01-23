@@ -1,17 +1,13 @@
 package dev.line4.blackBoard.blackboard.entity;
 
+import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
 import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
 import dev.line4.blackBoard.letter.entity.Letters;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import dev.line4.blackBoard.utils.entity.BaseEntity;
 import lombok.AllArgsConstructor;
@@ -37,19 +33,33 @@ url text
 @AllArgsConstructor
 @Table(name = "BLACKBOARD")
 public class BlackBoards extends BaseEntity {
-    @Id
-    private String id;
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column(length = 50)
     private String title;
+
     @Column(length = 100)
     private String introduction;
+
     @Column(length = 255)
-    private String email;
+    private String userId;
+
     @Column(name = "graduate_date")
     private String graduateDate;
-    @OneToMany(mappedBy = "boardId", fetch = FetchType.LAZY)
-    private Set<BlackBoardStickers> blackBoardStickers;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<BlackBoardStickers> blackBoardStickers = new ArrayList<>(); // 초기화 추가;
+
     @Builder.Default
     @OneToMany(mappedBy = "blackboard", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Letters> letters = new ArrayList<>();
+
+    // 생성 메서드
+    public static BlackBoards createBlackBoard(CreateBlackBoardDto.Req req) {
+            return req.getBlackboard().toEntity();
+    }
+
 }

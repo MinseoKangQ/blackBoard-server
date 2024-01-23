@@ -1,14 +1,13 @@
 package dev.line4.blackBoard.blackboard.controller;
 
+import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
 import dev.line4.blackBoard.blackboard.service.BlackBoardServiceImpl;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api")
@@ -26,23 +25,13 @@ public class BlackBoardController {
         return result;
     }
 
-    // TODO: 리팩토링
-    /*@PostMapping("/blackboard")
+    // 완료
+    @PostMapping("blackboard")
     @ApiOperation(value = "칠판 생성", notes = "칠판을 생성할 때 호출합니다.")
-    public ResponseEntity<BlackBoardResDto> createBlackBoard(@RequestBody BlackBoardReqDto blackBoardReqDto) {
-        BlackBoardResDto responseDto = blackBoardServiceImpl.createBlackBoard(blackBoardReqDto);
-
-        if (responseDto.getUrl() == null) {
-            // 이미 생성한 경우, 실패 응답
-            return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
-        }
-
-        // 생성 성공 응답
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
-
+    public ResponseEntity<ApiResponse<?>> createBlackBoard(@RequestBody CreateBlackBoardDto.Req req) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.createBlackBoard(req);
+        return result;
     }
-    */
-
 
     // TODO: 리팩토링
     /*

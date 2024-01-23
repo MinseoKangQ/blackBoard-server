@@ -1,13 +1,11 @@
 package dev.line4.blackBoard.blackboard.service;
 
-import dev.line4.blackBoard.blackboard.dto.GetBlackBoardCountDto;
-import dev.line4.blackBoard.blackboard.dto.BlackBoardOpenResDto;
-import dev.line4.blackBoard.blackboard.dto.BlackBoardReqDto;
-import dev.line4.blackBoard.blackboard.dto.BlackBoardResDto;
+import dev.line4.blackBoard.blackboard.dto.*;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
 import dev.line4.blackBoard.blackboardsticker.dto.BlackBoardStickerResDto;
 import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
+import dev.line4.blackBoard.blackboardsticker.repository.BlackBoardStickerRepository;
 import dev.line4.blackBoard.blackboardsticker.service.BlackBoardStickerService;
 import dev.line4.blackBoard.letter.dto.LetterOpenResDto;
 import dev.line4.blackBoard.letter.entity.Letters;
@@ -15,7 +13,6 @@ import dev.line4.blackBoard.lettersticker.dto.LetterStickerReqDto;
 import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import dev.line4.blackBoard.utils.response.ApiResponse;
@@ -29,6 +26,7 @@ import org.springframework.stereotype.Service;
 public class BlackBoardServiceImpl implements BlackBoardService{
 
     private final BlackBoardRepository blackBoardRepository;
+    private final BlackBoardStickerRepository blackBoardStickerRepository;
     private BlackBoardStickerService blackBoardStickerService;
 
     // 완료
@@ -40,37 +38,50 @@ public class BlackBoardServiceImpl implements BlackBoardService{
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
-    public BlackBoardResDto createBlackBoard(BlackBoardReqDto blackBoardReqDto) {
-        String randomUrl = UUID.randomUUID().toString().substring(0, 12);
+    // 완료
+    // 칠판 생성하기
+    @Override
+    public ResponseEntity<ApiResponse<?>> createBlackBoard(CreateBlackBoardDto.Req req) {
 
-        BlackBoards blackBoards = BlackBoards.builder()
-                .id(randomUrl)
-                .title(blackBoardReqDto.getTitle())
-                .introduction(blackBoardReqDto.getIntroduction())
-                .email(blackBoardReqDto.getEmail())
-                .graduateDate(blackBoardReqDto.getGraduateDate())
-                .build();
-        BlackBoards savedBlackBoard = blackBoardRepository.save(blackBoards);
+        // 칠판 엔티티 생성
+        BlackBoards blackBoard = BlackBoards.createBlackBoard(req);
 
-        blackBoardStickerService.createBlackBoardStickers(blackBoardReqDto.getStickers(), savedBlackBoard);
+        // 스티커 엔티티 생성, 칠판 엔티티와 연관관계 맺기
+        for(CreateBlackBoardDto.Req.Sticker stickerDto : req.getStickers()) {
+            BlackBoardStickers stickers = BlackBoardStickers.createBlackBoardSticker(stickerDto);
+            stickers.setBoard(blackBoard);
+            blackBoard.getBlackBoardStickers().add(stickers);
+        }
 
-        return BlackBoardResDto.builder().url(randomUrl).build();
+        // 저장
+        blackBoardRepository.save(blackBoard);
+        blackBoardStickerRepository.saveAll(blackBoard.getBlackBoardStickers());
+
+        // 응답할 데이터 생성
+        CreateBlackBoardDto.Res data = new CreateBlackBoardDto.Res(req.getBlackboard().getUserId());
+        ApiResponse<CreateBlackBoardDto.Res> res = ApiResponse.success(data, "칠판 생성 성공");
+        return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
+    @Override
     public BlackBoardOpenResDto getBlackBoardAndLetter(String blackboardId) {
-        BlackBoards blackBoard = blackBoardRepository.findById(blackboardId)
-                .orElseThrow(() -> new RuntimeException("Blackboard not found with id: " + blackboardId));
-        List<BlackBoardStickerResDto> boardStickers = mapToBlackBoardStickerResDtos(blackBoard.getBlackBoardStickers());
-        List<LetterOpenResDto> letters = mapToLetterOpenResDtos(blackBoard.getLetters());
-
-        return BlackBoardOpenResDto.builder()
-                .title(blackBoard.getTitle())
-                .introduction(blackBoard.getIntroduction())
-                .graduateDate(blackBoard.getGraduateDate())
-                .stickers(boardStickers)
-                .letters(letters)
-                .build();
+        return null;
     }
+
+//    public BlackBoardOpenResDto getBlackBoardAndLetter(String blackboardId) {
+//        BlackBoards blackBoard = blackBoardRepository.findById(blackboardId)
+//                .orElseThrow(() -> new RuntimeException("Blackboard not found with id: " + blackboardId));
+//        List<BlackBoardStickerResDto> boardStickers = mapToBlackBoardStickerResDtos(blackBoard.getBlackBoardStickers());
+//        List<LetterOpenResDto> letters = mapToLetterOpenResDtos(blackBoard.getLetters());
+//
+//        return BlackBoardOpenResDto.builder()
+//                .title(blackBoard.getTitle())
+//                .introduction(blackBoard.getIntroduction())
+//                .graduateDate(blackBoard.getGraduateDate())
+//                .stickers(boardStickers)
+//                .letters(letters)
+//                .build();
+//    }
 
     // 원래 private
     public List<BlackBoardStickerResDto> mapToBlackBoardStickerResDtos(Set<BlackBoardStickers> blackBoardStickers) {

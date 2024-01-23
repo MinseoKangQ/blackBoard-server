@@ -1,8 +1,9 @@
 package dev.line4.blackBoard.blackboard.service;
 
 import dev.line4.blackBoard.blackboard.dto.BlackBoardOpenResDto;
-import dev.line4.blackBoard.blackboard.dto.BlackBoardReqDto;
-import dev.line4.blackBoard.blackboard.dto.BlackBoardResDto;
+//import dev.line4.blackBoard.blackboard.dto.BlackBoardReqDto;
+//import dev.line4.blackBoard.blackboard.dto.BlackBoardResDto;
+import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
 import dev.line4.blackBoard.blackboardsticker.dto.BlackBoardStickerResDto;
 import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
 import dev.line4.blackBoard.letter.dto.LetterOpenResDto;
@@ -20,7 +21,9 @@ public interface BlackBoardService {
     // 생성된 칠판의 개수 가져오기
     ResponseEntity<ApiResponse<?>> getBlackBoardCount();
 
-    BlackBoardResDto createBlackBoard(BlackBoardReqDto blackBoardReqDto);
+    // 칠판 생성하기
+    ResponseEntity<ApiResponse<?>> createBlackBoard(CreateBlackBoardDto.Req req) throws Exception;
+
     BlackBoardOpenResDto getBlackBoardAndLetter(String blackboardId);
     List<BlackBoardStickerResDto> mapToBlackBoardStickerResDtos(Set<BlackBoardStickers> blackBoardStickers);
     BlackBoardStickerResDto mapToBlackBoardStickerResDto(BlackBoardStickers sticker);

@@ -26,7 +26,7 @@ public class BlackBoardStickerService {
                     .width(stickerDto.getWidth())
                     .angle(stickerDto.getAngle())
                     .mirror(stickerDto.getMirror())
-                    .boardId(blackboard)
+                    .board(blackboard)
                     .build();
 
             blackBoardStickerRepository.save(blackBoardStickers);
