@@ -7,7 +7,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api")
@@ -30,6 +35,13 @@ public class BlackBoardController {
     @ApiOperation(value = "칠판 생성", notes = "칠판을 생성할 때 호출합니다.")
     public ResponseEntity<ApiResponse<?>> createBlackBoard(@RequestBody CreateBlackBoardDto.Req req) {
         ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.createBlackBoard(req);
+        return result;
+    }
+
+    @GetMapping("check-duplicate")
+    @ApiOperation(value = "userId 중복 확인", notes = "userId를 입력받은 후 호출합니다.")
+    public ResponseEntity<ApiResponse<?>> checkDuplicateUserId(@RequestParam("userId") String userId) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.checkDuplicateUserId(userId);
         return result;
     }
 

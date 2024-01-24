@@ -1,6 +1,8 @@
 package dev.line4.blackBoard.blackboard.service;
 
-import dev.line4.blackBoard.blackboard.dto.*;
+import dev.line4.blackBoard.blackboard.dto.BlackBoardOpenResDto;
+import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
+import dev.line4.blackBoard.blackboard.dto.GetBlackBoardCountDto;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
 import dev.line4.blackBoard.blackboardsticker.dto.BlackBoardStickerResDto;
@@ -11,11 +13,10 @@ import dev.line4.blackBoard.letter.dto.LetterOpenResDto;
 import dev.line4.blackBoard.letter.entity.Letters;
 import dev.line4.blackBoard.lettersticker.dto.LetterStickerReqDto;
 import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
+import dev.line4.blackBoard.utils.response.ApiResponse;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import dev.line4.blackBoard.utils.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class BlackBoardServiceImpl implements BlackBoardService{
+public class BlackBoardServiceImpl implements BlackBoardService {
 
     private final BlackBoardRepository blackBoardRepository;
     private final BlackBoardStickerRepository blackBoardStickerRepository;
@@ -47,7 +48,7 @@ public class BlackBoardServiceImpl implements BlackBoardService{
         BlackBoards blackBoard = BlackBoards.createBlackBoard(req);
 
         // 스티커 엔티티 생성, 칠판 엔티티와 연관관계 맺기
-        for(CreateBlackBoardDto.Req.Sticker stickerDto : req.getStickers()) {
+        for (CreateBlackBoardDto.Req.Sticker stickerDto : req.getStickers()) {
             BlackBoardStickers stickers = BlackBoardStickers.createBlackBoardSticker(stickerDto);
             stickers.setBoard(blackBoard);
             blackBoard.getBlackBoardStickers().add(stickers);
@@ -62,6 +63,24 @@ public class BlackBoardServiceImpl implements BlackBoardService{
         ApiResponse<CreateBlackBoardDto.Res> res = ApiResponse.success(data, "칠판 생성 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
+
+    // 사용자의 이름 중복인지 확인
+    @Override
+    public ResponseEntity<ApiResponse<?>> checkDuplicateUserId(String userId) {
+        // userId를 기준으로 중복 검사
+        boolean isDuplicate = blackBoardRepository.existsByUserId(userId);
+
+        if (isDuplicate) {
+            // 중복된 userId가 존재할 경우
+            ApiResponse<String> errorResponse = ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 URL 입니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } else {
+            // 중복된 userId가 없을 경우
+            ApiResponse<String> successResponse = ApiResponse.success(HttpStatus.OK.value(), "사용 가능한 URL 입니다.");
+            return ResponseEntity.status(HttpStatus.OK).body(successResponse);
+        }
+    }
+
 
     @Override
     public BlackBoardOpenResDto getBlackBoardAndLetter(String blackboardId) {

@@ -24,6 +24,7 @@ public interface BlackBoardService {
     // 칠판 생성하기
     ResponseEntity<ApiResponse<?>> createBlackBoard(CreateBlackBoardDto.Req req) throws Exception;
 
+    ResponseEntity<ApiResponse<?>> checkDuplicateUserId(String userId);
     BlackBoardOpenResDto getBlackBoardAndLetter(String blackboardId);
     List<BlackBoardStickerResDto> mapToBlackBoardStickerResDtos(Set<BlackBoardStickers> blackBoardStickers);
     BlackBoardStickerResDto mapToBlackBoardStickerResDto(BlackBoardStickers sticker);
