@@ -9,12 +9,9 @@ import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
 import dev.line4.blackBoard.blackboardsticker.service.BlackBoardStickerServiceImpl;
 import dev.line4.blackBoard.letter.entity.Letters;
 import dev.line4.blackBoard.letter.service.LetterServiceImpl;
-import dev.line4.blackBoard.lettersticker.repository.LetterStickerRepository;
 import dev.line4.blackBoard.utils.response.ApiResponse;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,21 +83,15 @@ public class BlackBoardServiceImpl implements BlackBoardService {
         List<GetBlackBoardAndLetterDto.Sticker> resBlackBoardSticker = blackBoardStickerService.convertToBlackBoardStickerDtoList(foundBlackBoard);
 
         // 칠판 응답 (dto)
-        GetBlackBoardAndLetterDto.Res.BlackBoard resBlackBoard = GetBlackBoardAndLetterDto.Res.BlackBoard.builder()
-                .title(foundBlackBoard.getTitle())
-                .introduction(foundBlackBoard.getIntroduction())
-                .userId(foundBlackBoard.getUserId())
-                .openDate(foundBlackBoard.getOpenDate())
-                .stickers(resBlackBoardSticker)
-                .build();
+        GetBlackBoardAndLetterDto.Res.BlackBoard resBlackBoard = convertToBlackBoardDto(foundBlackBoard, resBlackBoardSticker);
 
         // 편지 + 편지 스티커 응답 (dto)
         List<GetBlackBoardAndLetterDto.Res.Letter> resLetter = letterService.convertToLetterAndLetterStickerDtoList(letters);
 
         // 응답 데이터 생성
         GetBlackBoardAndLetterDto.Res data = GetBlackBoardAndLetterDto.Res.builder()
-                .blackboard(resBlackBoard)
-                .letter(resLetter)
+                .blackboard(resBlackBoard) // 칠판 + 칠판 스티커
+                .letter(resLetter) // 편지 + 편지 스티커
                 .build();
 
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(data, "칠판과 편지가 성공적으로 조회되었습니다."));
@@ -121,6 +112,16 @@ public class BlackBoardServiceImpl implements BlackBoardService {
             ApiResponse<String> successResponse = ApiResponse.success(HttpStatus.OK.value(), "사용 가능한 URL 입니다.");
             return ResponseEntity.status(HttpStatus.OK).body(successResponse);
         }
+    }
+
+    private static GetBlackBoardAndLetterDto.Res.BlackBoard convertToBlackBoardDto(BlackBoards foundBlackBoard, List<GetBlackBoardAndLetterDto.Sticker> resBlackBoardSticker) {
+        return GetBlackBoardAndLetterDto.Res.BlackBoard.builder()
+                .title(foundBlackBoard.getTitle())
+                .introduction(foundBlackBoard.getIntroduction())
+                .userId(foundBlackBoard.getUserId())
+                .openDate(foundBlackBoard.getOpenDate())
+                .stickers(resBlackBoardSticker)
+                .build();
     }
 
 }
