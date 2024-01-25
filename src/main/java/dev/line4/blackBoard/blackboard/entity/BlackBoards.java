@@ -8,11 +8,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import dev.line4.blackBoard.utils.entity.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /*
 id long
@@ -24,11 +20,10 @@ url text
 
 */
 @Getter
-@Setter
 @Entity
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "BLACKBOARD")
 public class BlackBoards extends BaseEntity {
 

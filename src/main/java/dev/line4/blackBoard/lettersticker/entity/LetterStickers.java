@@ -15,18 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import dev.line4.blackBoard.utils.entity.BaseEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
 @Builder
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "LETTER_STICKERS")
 public class LetterStickers extends BaseEntity {
 
@@ -60,42 +55,6 @@ public class LetterStickers extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "letter_id")
     private Letters letter;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        LetterStickers that = (LetterStickers) o;
-        return Objects.equals(letterStickerId, that.letterStickerId) && Objects.equals(num, that.num)
-                && Objects.equals(positionX, that.positionX) && Objects.equals(positionY,
-                that.positionY) && Objects.equals(img, that.img) && Objects.equals(width, that.width)
-                && Objects.equals(angle, that.angle) && Objects.equals(mirror, that.mirror)
-                && Objects.equals(letter, that.letter);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(letterStickerId, num, positionX, positionY, img, width, angle, mirror, letter);
-    }
-
-    @Override
-    public String toString() {
-        return "LetterStickers{" +
-                "letterStickerId=" + letterStickerId +
-                ", num=" + num +
-                ", positionX=" + positionX +
-                ", positionY=" + positionY +
-                ", img=" + img +
-                ", width=" + width +
-                ", angle=" + angle +
-                ", mirror=" + mirror +
-                ", letter=" + letter +
-                '}';
-    }
 
     // 생성 메서드
     public static LetterStickers createLetterSticker(CreateLetterDto.Req.Sticker dto) {

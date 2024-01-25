@@ -3,14 +3,13 @@ package dev.line4.blackBoard.letter.service;
 import dev.line4.blackBoard.blackboard.dto.GetBlackBoardAndLetterDto;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
-import dev.line4.blackBoard.blackboardsticker.repository.BlackBoardStickerRepository;
 import dev.line4.blackBoard.letter.dto.CreateLetterDto;
 import dev.line4.blackBoard.letter.dto.ReadWriterDto;
 import dev.line4.blackBoard.letter.entity.Letters;
 import dev.line4.blackBoard.letter.repository.LetterRepository;
 import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
 import dev.line4.blackBoard.lettersticker.repository.LetterStickerRepository;
-import dev.line4.blackBoard.lettersticker.service.LetterStickerServiceImpl;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +35,7 @@ public class LetterServiceImpl implements LetterService {
         // userId 로 칠판 찾기, 없으면 에러 응답
         Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
         if(findBlackBoard.isEmpty()) {
-            ApiResponse<Object> res = ApiResponse.fail(404, "칠판을 찾을 수 없습니다.");
+            ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
@@ -61,7 +60,7 @@ public class LetterServiceImpl implements LetterService {
         letterStickerRepository.saveAll(letter.getLetterStickers());
 
         // 응답할 데이터 생성
-        ApiResponse<Object> res = ApiResponse.success(null, "편지가 정상적으로 등록되었습니다.");
+        ApiResponse<Object> res = ApiResponse.createSuccessWithData(null, "편지가 정상적으로 등록되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
@@ -71,7 +70,7 @@ public class LetterServiceImpl implements LetterService {
         // userId 로 칠판 찾기, 없으면 에러 응답
         Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
         if(findBlackBoard.isEmpty()) {
-            ApiResponse<Object> res = ApiResponse.fail(404, "칠판을 찾을 수 없습니다.");
+            ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
@@ -89,7 +88,7 @@ public class LetterServiceImpl implements LetterService {
                 .writers(writers)
                 .build();
 
-        ApiResponse<ReadWriterDto.Res> res = ApiResponse.success(resData, "편지 작성자가 정상적으로 조회되었습니다.");
+        ApiResponse<ReadWriterDto.Res> res = ApiResponse.createSuccessWithData(resData, "편지 작성자가 정상적으로 조회되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 

@@ -12,14 +12,14 @@ import java.util.List;
 public class CreateBlackBoardDto {
 
     @Getter
-    @NoArgsConstructor(access = AccessLevel.PACKAGE)
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Req {
 
         private BlackBoard blackboard;
         private List<Sticker> stickers;
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PACKAGE)
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
         public static class BlackBoard {
             private String title;
             private String introduction;
@@ -37,7 +37,7 @@ public class CreateBlackBoardDto {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PACKAGE)
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
         public static class Sticker {
             private Long num;
             private Double positionX;

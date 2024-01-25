@@ -45,7 +45,7 @@ public class CreateLetterDto {
         }
 
         @Getter
-        @NoArgsConstructor(access = AccessLevel.PACKAGE)
+        @NoArgsConstructor(access = AccessLevel.PROTECTED)
         public static class Sticker {
             private Long num;
             private Double positionX;

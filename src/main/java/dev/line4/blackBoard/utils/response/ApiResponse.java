@@ -21,19 +21,18 @@ public class ApiResponse<T> {
     private T data;
     private String message;
 
-    public static <T> ApiResponse<T> success(T data, String message) {
+    public static <T> ApiResponse<T> createSuccessWithData(T data, String message) {
         return new ApiResponse<>(OK, data, message);
     }
-    public static <T> ApiResponse<T> success(int status, String message) {
+    public static <T> ApiResponse<T> createSuccessWithoutData(int status, String message) {
         return new ApiResponse<>(status, null, message);
     }
 
-
-    public static <T> ApiResponse<T> fail(int status, String message) {
+    public static <T> ApiResponse<T> createFailWithoutData(int status, String message) {
         return new ApiResponse<>(status, null, message);
     }
 
-    public static <T> ApiResponse<T> fail(int status, BindingResult bindingResult) {
+    public static <T> ApiResponse<T> createFailWithData(int status, BindingResult bindingResult) {
         List<String> errorMessages = bindingResult.getAllErrors().stream()
                 .map(ObjectError::getObjectName)
                 .collect(Collectors.toList());
