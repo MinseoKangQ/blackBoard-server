@@ -27,9 +27,6 @@ public class LetterServiceImpl implements LetterService {
     private final LetterRepository letterRepository;
     private final LetterStickerRepository letterStickerRepository;
 
-    private final LetterStickerServiceImpl letterStickerService;
-    private final BlackBoardStickerRepository blackBoardStickerRepository;
-
     // 완료
     // 편지 생성하기
     @Override

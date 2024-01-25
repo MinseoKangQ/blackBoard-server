@@ -4,9 +4,7 @@ import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
 import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
 import dev.line4.blackBoard.letter.entity.Letters;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.*;
 
 import dev.line4.blackBoard.utils.entity.BaseEntity;

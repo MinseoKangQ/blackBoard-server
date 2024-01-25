@@ -3,7 +3,6 @@ package dev.line4.blackBoard.blackboard.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-// 완료
 public class GetBlackBoardCountDto {
 
     @Getter
