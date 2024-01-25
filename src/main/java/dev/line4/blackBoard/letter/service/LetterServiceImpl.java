@@ -1,5 +1,6 @@
 package dev.line4.blackBoard.letter.service;
 
+import dev.line4.blackBoard.blackboard.dto.GetBlackBoardAndLetterDto;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
 import dev.line4.blackBoard.blackboardsticker.repository.BlackBoardStickerRepository;
@@ -90,6 +91,34 @@ public class LetterServiceImpl implements LetterService {
 
         ApiResponse<ReadWriterDto.Res> res = ApiResponse.success(resData, "편지 작성자가 정상적으로 조회되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
+    }
+
+    @Override
+    public List<GetBlackBoardAndLetterDto.Res.Letter> convertToLetterAndLetterStickerDtoList(List<Letters> letters) {
+        return letters.stream().map(letter -> {
+            // 편지 스티커 엔티티 가져오기 및 DTO 변환
+            List<GetBlackBoardAndLetterDto.Sticker> resLetterSticker = letter.getLetterStickers().stream()
+                    .map(letterSticker -> GetBlackBoardAndLetterDto.Sticker.builder()
+                            .num(letterSticker.getNum())
+                            .positionX(letterSticker.getPositionX())
+                            .positionY(letterSticker.getPositionY())
+                            .img(letterSticker.getImg())
+                            .width(letterSticker.getWidth())
+                            .angle(letterSticker.getAngle())
+                            .mirror(letterSticker.getMirror())
+                            .build())
+                    .collect(Collectors.toList());
+
+            // 편지 DTO 구성
+            return GetBlackBoardAndLetterDto.Res.Letter.builder()
+                    .id(letter.getLetterId())
+                    .nickname(letter.getNickname())
+                    .content(letter.getContent())
+                    .font(letter.getFont())
+                    .align(letter.getAlign())
+                    .stickers(resLetterSticker)
+                    .build();
+        }).collect(Collectors.toList());
     }
 
 }

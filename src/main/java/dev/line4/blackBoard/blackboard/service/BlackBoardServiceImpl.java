@@ -6,8 +6,9 @@ import dev.line4.blackBoard.blackboard.dto.GetBlackBoardCountDto;
 import dev.line4.blackBoard.blackboard.entity.BlackBoards;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
 import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
-import dev.line4.blackBoard.blackboardsticker.repository.BlackBoardStickerRepository;
+import dev.line4.blackBoard.blackboardsticker.service.BlackBoardStickerServiceImpl;
 import dev.line4.blackBoard.letter.entity.Letters;
+import dev.line4.blackBoard.letter.service.LetterServiceImpl;
 import dev.line4.blackBoard.lettersticker.repository.LetterStickerRepository;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 
@@ -23,9 +24,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BlackBoardServiceImpl implements BlackBoardService {
 
+    // repository
     private final BlackBoardRepository blackBoardRepository;
-    private final BlackBoardStickerRepository blackBoardStickerRepository;
-    private final LetterStickerRepository letterStickerRepository;
+
+    // service
+    private final BlackBoardStickerServiceImpl blackBoardStickerService;
+    private final LetterServiceImpl letterService;
 
     // 완료
     // 생성된 칠판의 개수 가져오기
@@ -44,21 +48,17 @@ public class BlackBoardServiceImpl implements BlackBoardService {
         // 칠판 엔티티 생성
         BlackBoards blackBoard = BlackBoards.createBlackBoard(req);
 
-        // 스티커 엔티티 생성, 칠판 엔티티와 연관관계 맺기
-        for (CreateBlackBoardDto.Req.Sticker stickerDto : req.getStickers()) {
-            BlackBoardStickers stickers = BlackBoardStickers.createBlackBoardSticker(stickerDto);
-            stickers.setBoard(blackBoard);
-            blackBoard.getBlackBoardStickers().add(stickers);
-        }
-
-        // 저장
+        // 칠판 엔티티 저장 (** 칠판 저장 후 칠판 스티커 저장 **)
         blackBoardRepository.save(blackBoard);
-        blackBoardStickerRepository.saveAll(blackBoard.getBlackBoardStickers());
+
+        // 칠판 스티커 엔티티 저장 + 칠판 엔티티와 연관관계
+        List<BlackBoardStickers> stickers = blackBoardStickerService.createStickers(req.getStickers(), blackBoard);
 
         // 응답할 데이터 생성
         CreateBlackBoardDto.Res data = new CreateBlackBoardDto.Res(req.getBlackboard().getUserId());
         ApiResponse<CreateBlackBoardDto.Res> res = ApiResponse.success(data, "칠판 생성 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
+
     }
 
     // 완료
@@ -83,17 +83,7 @@ public class BlackBoardServiceImpl implements BlackBoardService {
         List<Letters> letters = foundBlackBoard.getLetters();
 
         // 칠판 스티커 응답 (dto)
-        List<GetBlackBoardAndLetterDto.Sticker> resBlackBoardSticker = blackBoardStickers.stream()
-                .map(sticker -> GetBlackBoardAndLetterDto.Sticker.builder()
-                        .num(sticker.getNum())
-                        .positionX(sticker.getPositionX())
-                        .positionY(sticker.getPositionY())
-                        .img(sticker.getImg())
-                        .width(sticker.getWidth())
-                        .angle(sticker.getAngle())
-                        .mirror(sticker.getMirror())
-                        .build())
-                .collect(Collectors.toList());
+        List<GetBlackBoardAndLetterDto.Sticker> resBlackBoardSticker = blackBoardStickerService.convertToBlackBoardStickerDtoList(foundBlackBoard);
 
         // 칠판 응답 (dto)
         GetBlackBoardAndLetterDto.Res.BlackBoard resBlackBoard = GetBlackBoardAndLetterDto.Res.BlackBoard.builder()
@@ -104,33 +94,8 @@ public class BlackBoardServiceImpl implements BlackBoardService {
                 .stickers(resBlackBoardSticker)
                 .build();
 
-        // 편지 응답 (dto)
-        List<GetBlackBoardAndLetterDto.Res.Letter> resLetter = letters.stream()
-                .map(letter -> {
-                    // 편지 스티커 엔티티 가져오기 및 dto 변환
-                    List<GetBlackBoardAndLetterDto.Sticker> resLetterSticker = letterStickerRepository.findAllByLetter(letter).stream()
-                            .map(letterSticker -> GetBlackBoardAndLetterDto.Sticker.builder()
-                                    .num(letterSticker.getNum())
-                                    .positionX(letterSticker.getPositionX())
-                                    .positionY(letterSticker.getPositionY())
-                                    .img(letterSticker.getImg())
-                                    .width(letterSticker.getWidth())
-                                    .angle(letterSticker.getAngle())
-                                    .mirror(letterSticker.getMirror())
-                                    .build())
-                            .collect(Collectors.toList());
-
-                    // 편지 dto 구성
-                    return GetBlackBoardAndLetterDto.Res.Letter.builder()
-                            .id(letter.getLetterId())
-                            .nickname(letter.getNickname())
-                            .content(letter.getContent())
-                            .font(letter.getFont())
-                            .align(letter.getAlign())
-                            .stickers(resLetterSticker)
-                            .build();
-                })
-                .collect(Collectors.toList());
+        // 편지 + 편지 스티커 응답 (dto)
+        List<GetBlackBoardAndLetterDto.Res.Letter> resLetter = letterService.convertToLetterAndLetterStickerDtoList(letters);
 
         // 응답 데이터 생성
         GetBlackBoardAndLetterDto.Res data = GetBlackBoardAndLetterDto.Res.builder()
