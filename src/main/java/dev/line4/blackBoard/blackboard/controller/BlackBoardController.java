@@ -38,13 +38,7 @@ public class BlackBoardController {
         return result;
     }
 
-    @GetMapping("check-duplicate")
-    @ApiOperation(value = "userId 중복 확인", notes = "userId를 입력받은 후 호출합니다.")
-    public ResponseEntity<ApiResponse<?>> checkDuplicateUserId(@RequestParam("userId") String userId) {
-        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.checkDuplicateUserId(userId);
-        return result;
-    }
-
+    // 완료
     @GetMapping("blackboard")
     @ApiOperation(value = "칠판과 편지", notes = "칠판을 조회할 때 호출합니다.")
     public ResponseEntity<ApiResponse<?>> getBlackBoardAndLetter(@RequestParam("userId") String userId) {
@@ -52,15 +46,11 @@ public class BlackBoardController {
         return result;
     }
 
-    // TODO: 리팩토링
-    /*
-    @GetMapping("/blackboard")
-    @ApiOperation(value = "칠판과 편지", notes = "칠판을 조회할 때 호출합니다.")
-    public ResponseEntity<BlackBoardOpenResDto> getBlackBoardAndLetter(@RequestParam("id") String blackboardId) {
-            BlackBoardOpenResDto blackBoardOpenResDto = blackBoardServiceImpl.getBlackBoardAndLetter(blackboardId);
-            BlackBoardOpenResDto responseDto = modelMapper.map(blackBoardOpenResDto, BlackBoardOpenResDto.class);
-            return ResponseEntity.ok(responseDto);
+    @GetMapping("check-duplicate")
+    @ApiOperation(value = "userId 중복 확인", notes = "userId를 입력받은 후 호출합니다.")
+    public ResponseEntity<ApiResponse<?>> checkDuplicateUserId(@RequestParam("userId") String userId) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.checkDuplicateUserId(userId);
+        return result;
     }
-     */
 
 }
