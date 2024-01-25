@@ -35,7 +35,7 @@ public class BlackBoardStickerServiceImpl implements BlackBoardStickerService {
     }
 
     // 칠판 스티커 DTO 변환 메서드
-    public List<GetBlackBoardAndLetterDto.Sticker> convertToStickerDtoList(BlackBoards blackBoard) {
+    public List<GetBlackBoardAndLetterDto.Sticker> convertToBlackBoardStickerDtoList(BlackBoards blackBoard) {
         return blackBoard.getBlackBoardStickers().stream()
                 .map(sticker -> GetBlackBoardAndLetterDto.Sticker.builder()
                         .num(sticker.getNum())
