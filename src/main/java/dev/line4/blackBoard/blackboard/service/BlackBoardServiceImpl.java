@@ -33,7 +33,7 @@ public class BlackBoardServiceImpl implements BlackBoardService {
     @Override
     public ResponseEntity<ApiResponse<?>> getBlackBoardCount() {
         GetBlackBoardCountDto.Res data = new GetBlackBoardCountDto.Res(blackBoardRepository.count());
-        ApiResponse<GetBlackBoardCountDto.Res> res = ApiResponse.success(data, "칠판 개수 조회 성공");
+        ApiResponse<GetBlackBoardCountDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 개수 조회 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
@@ -53,7 +53,7 @@ public class BlackBoardServiceImpl implements BlackBoardService {
 
         // 응답할 데이터 생성
         CreateBlackBoardDto.Res data = new CreateBlackBoardDto.Res(req.getBlackboard().getUserId());
-        ApiResponse<CreateBlackBoardDto.Res> res = ApiResponse.success(data, "칠판 생성 성공");
+        ApiResponse<CreateBlackBoardDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 생성 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
@@ -66,7 +66,7 @@ public class BlackBoardServiceImpl implements BlackBoardService {
         // 칠판 찾기, 없으면 404
         Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
         if(findBlackBoard.isEmpty()) {
-            ApiResponse<Object> res = ApiResponse.fail(404, "칠판을 찾을 수 없습니다.");
+            ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
@@ -94,7 +94,7 @@ public class BlackBoardServiceImpl implements BlackBoardService {
                 .letter(resLetter) // 편지 + 편지 스티커
                 .build();
 
-        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.success(data, "칠판과 편지가 성공적으로 조회되었습니다."));
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.createSuccessWithData(data, "칠판과 편지가 성공적으로 조회되었습니다."));
     }
 
     // 사용자의 이름 중복인지 확인
@@ -105,11 +105,11 @@ public class BlackBoardServiceImpl implements BlackBoardService {
 
         if (isDuplicate) {
             // 중복된 userId가 존재할 경우
-            ApiResponse<String> errorResponse = ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 URL 입니다.");
+            ApiResponse<String> errorResponse = ApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), "이미 존재하는 URL 입니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } else {
             // 중복된 userId가 없을 경우
-            ApiResponse<String> successResponse = ApiResponse.success(HttpStatus.OK.value(), "사용 가능한 URL 입니다.");
+            ApiResponse<String> successResponse = ApiResponse.createSuccessWithoutData(HttpStatus.OK.value(), "사용 가능한 URL 입니다.");
             return ResponseEntity.status(HttpStatus.OK).body(successResponse);
         }
     }
