@@ -45,6 +45,13 @@ public class BlackBoardController {
         return result;
     }
 
+    @GetMapping("blackboard")
+    @ApiOperation(value = "칠판과 편지", notes = "칠판을 조회할 때 호출합니다.")
+    public ResponseEntity<ApiResponse<?>> getBlackBoardAndLetter(@RequestParam("userId") String userId) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.getBlackBoardAndLetter(userId);
+        return result;
+    }
+
     // TODO: 리팩토링
     /*
     @GetMapping("/blackboard")

@@ -55,12 +55,12 @@ public class LetterServiceImpl implements LetterService {
         for(CreateLetterDto.Req.Sticker sticker : req.getStickers()) {
             LetterStickers stickers  = LetterStickers.createLetterSticker(sticker);
             stickers.setLetter(letter);
-            letter.getStickers().add(stickers);
+            letter.getLetterStickers().add(stickers);
         }
 
         // 저장
         letterRepository.save(letter);
-        letterStickerRepository.saveAll(letter.getStickers());
+        letterStickerRepository.saveAll(letter.getLetterStickers());
 
         // 응답할 데이터 생성
         ApiResponse<Object> res = ApiResponse.success(null, "편지가 정상적으로 등록되었습니다.");

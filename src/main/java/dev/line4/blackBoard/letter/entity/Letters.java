@@ -60,7 +60,7 @@ public class Letters extends BaseEntity {
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "letter", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<LetterStickers> stickers = new ArrayList<>();
+    private List<LetterStickers> letterStickers = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -73,12 +73,12 @@ public class Letters extends BaseEntity {
         Letters letters = (Letters) o;
         return Objects.equals(letterId, letters.letterId) && Objects.equals(content, letters.content)
                 && Objects.equals(nickname, letters.nickname) && Objects.equals(font, letters.font)
-                && Objects.equals(align, letters.align) && Objects.equals(stickers, letters.stickers);
+                && Objects.equals(align, letters.align) && Objects.equals(letterStickers, letters.letterStickers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(letterId, content, nickname, font, align, stickers);
+        return Objects.hash(letterId, content, nickname, font, align, letterStickers);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class Letters extends BaseEntity {
                 ", nickname='" + nickname + '\'' +
                 ", font='" + font + '\'' +
                 ", align='" + align + '\'' +
-                ", stickers=" + stickers +
+                ", stickers=" + letterStickers +
                 '}';
     }
 

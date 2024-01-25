@@ -1,6 +1,5 @@
 package dev.line4.blackBoard.blackboard.service;
 
-import dev.line4.blackBoard.blackboard.dto.BlackBoardOpenResDto;
 //import dev.line4.blackBoard.blackboard.dto.BlackBoardReqDto;
 //import dev.line4.blackBoard.blackboard.dto.BlackBoardResDto;
 import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
@@ -24,13 +23,12 @@ public interface BlackBoardService {
     // 칠판 생성하기
     ResponseEntity<ApiResponse<?>> createBlackBoard(CreateBlackBoardDto.Req req) throws Exception;
 
+    // 칠판, 편지 조회
+    ResponseEntity<ApiResponse<?>> getBlackBoardAndLetter(String userId);
+
+    // 아이디 중복 확인
     ResponseEntity<ApiResponse<?>> checkDuplicateUserId(String userId);
-    BlackBoardOpenResDto getBlackBoardAndLetter(String blackboardId);
-    List<BlackBoardStickerResDto> mapToBlackBoardStickerResDtos(Set<BlackBoardStickers> blackBoardStickers);
-    BlackBoardStickerResDto mapToBlackBoardStickerResDto(BlackBoardStickers sticker);
-    List<LetterOpenResDto> mapToLetterOpenResDtos(List<Letters> letters);
-    LetterOpenResDto mapToLetterOpenResDto(Letters letter);
-    List<LetterStickerReqDto> mapToLetterStickerReqDtos(List<LetterStickers> letterStickers);
-    LetterStickerReqDto mapToLetterStickerReqDto(LetterStickers letterSticker);
+
+
 
 }
