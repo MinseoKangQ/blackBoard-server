@@ -1,6 +1,7 @@
 package dev.line4.blackBoard.filtering.controller;
 
 import dev.line4.blackBoard.filtering.dto.FilterBlackBoardDto;
+import dev.line4.blackBoard.filtering.dto.FilterLetterDto;
 import dev.line4.blackBoard.filtering.service.FilteringServiceImpl;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import io.swagger.annotations.Api;
@@ -24,6 +25,13 @@ public class FilteringController {
     @ApiOperation(value = "칠판 생성때 비속어 필터링", notes = "칠판을 생성할 때 호출합니다.")
     public ResponseEntity<ApiResponse<?>> filterBlackBoard(@RequestBody FilterBlackBoardDto dto) throws Exception {
         ResponseEntity<ApiResponse<?>> result = filteringService.filterBlackBoard(dto);
+        return result;
+    }
+
+    @PostMapping("letter")
+    @ApiOperation(value = "편지 생성 때 비속어 필터링", notes = "편지을 생성할 때 호출합니다.")
+    public ResponseEntity<ApiResponse<?>> filterLetter(@RequestBody FilterLetterDto dto) throws Exception {
+        ResponseEntity<ApiResponse<?>> result = filteringService.filterLetter(dto);
         return result;
     }
 }
