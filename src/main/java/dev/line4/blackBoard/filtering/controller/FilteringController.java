@@ -22,7 +22,7 @@ public class FilteringController {
 
     @PostMapping("blackboard")
     @ApiOperation(value = "칠판 생성때 비속어 필터링", notes = "칠판을 생성할 때 호출합니다.")
-    public ResponseEntity<ApiResponse<?>> createBlackBoard(@RequestBody FilterBlackBoardDto dto) throws Exception {
+    public ResponseEntity<ApiResponse<?>> filterBlackBoard(@RequestBody FilterBlackBoardDto dto) throws Exception {
         ResponseEntity<ApiResponse<?>> result = filteringService.filterBlackBoard(dto);
         return result;
     }
