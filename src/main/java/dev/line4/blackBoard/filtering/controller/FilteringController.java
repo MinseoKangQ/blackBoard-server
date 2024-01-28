@@ -23,15 +23,15 @@ public class FilteringController {
 
     @PostMapping("blackboard")
     @ApiOperation(value = "칠판 생성때 비속어 필터링", notes = "칠판을 생성할 때 호출합니다.")
-    public ResponseEntity<ApiResponse<?>> filterBlackBoard(@RequestBody FilterBlackBoardDto dto) throws Exception {
-        ResponseEntity<ApiResponse<?>> result = filteringService.filterBlackBoard(dto);
+    public ResponseEntity<ApiResponse<?>> filterBlackBoard(@RequestBody FilterBlackBoardDto.Req req) throws Exception {
+        ResponseEntity<ApiResponse<?>> result = filteringService.filterBlackBoard(req);
         return result;
     }
 
     @PostMapping("letter")
     @ApiOperation(value = "편지 생성 때 비속어 필터링", notes = "편지을 생성할 때 호출합니다.")
-    public ResponseEntity<ApiResponse<?>> filterLetter(@RequestBody FilterLetterDto dto) throws Exception {
-        ResponseEntity<ApiResponse<?>> result = filteringService.filterLetter(dto);
+    public ResponseEntity<ApiResponse<?>> filterLetter(@RequestBody FilterLetterDto.Req req) throws Exception {
+        ResponseEntity<ApiResponse<?>> result = filteringService.filterLetter(req);
         return result;
     }
 }

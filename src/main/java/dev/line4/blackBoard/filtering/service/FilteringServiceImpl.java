@@ -15,10 +15,10 @@ public class FilteringServiceImpl implements FilteringService {
 
     // 비속어 확인
     @Override
-    public ResponseEntity<ApiResponse<?>> filterBlackBoard(FilterBlackBoardDto dto) {
-        String title = dto.getBlackboard().getTitle();
-        String introduction = dto.getBlackboard().getIntroduction();
-        String userId = dto.getBlackboard().getUserId();
+    public ResponseEntity<ApiResponse<?>> filterBlackBoard(FilterBlackBoardDto.Req req) {
+        String title = req.getBlackboard().getTitle();
+        String introduction = req.getBlackboard().getIntroduction();
+        String userId = req.getBlackboard().getUserId();
 
         // 여기에 비속어 확인 로직 추가
         if (containsProfanity(title) || containsProfanity(introduction) || containsProfanity(userId)) {
@@ -33,9 +33,9 @@ public class FilteringServiceImpl implements FilteringService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> filterLetter(FilterLetterDto dto) {
-        String nickname = dto.getLetter().getNickname();
-        String content = dto.getLetter().getContent();
+    public ResponseEntity<ApiResponse<?>> filterLetter(FilterLetterDto.Req req) {
+        String nickname = req.getLetter().getNickname();
+        String content = req.getLetter().getContent();
 
         // 여기에 비속어 확인 로직 추가
         if (containsProfanity(nickname) || containsProfanity(content)) {

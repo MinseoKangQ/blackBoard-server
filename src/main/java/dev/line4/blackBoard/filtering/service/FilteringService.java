@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 
 public interface FilteringService {
 
-    ResponseEntity<ApiResponse<?>> filterBlackBoard(FilterBlackBoardDto dto) throws Exception;
+    ResponseEntity<ApiResponse<?>> filterBlackBoard(FilterBlackBoardDto.Req req) throws Exception;
 
-    ResponseEntity<ApiResponse<?>> filterLetter(FilterLetterDto dto) throws Exception;
+    ResponseEntity<ApiResponse<?>> filterLetter(FilterLetterDto.Req req) throws Exception;
 
 }
