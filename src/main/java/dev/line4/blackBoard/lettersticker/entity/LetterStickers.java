@@ -3,7 +3,7 @@ package dev.line4.blackBoard.lettersticker.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.line4.blackBoard.letter.dto.CreateLetterDto;
 import dev.line4.blackBoard.letter.entity.Letters;
-import java.util.Objects;
+import dev.line4.blackBoard.utils.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,10 +13,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import dev.line4.blackBoard.utils.entity.BaseEntity;
-import lombok.*;
-
+@Setter
 @Getter
 @Builder
 @Entity
