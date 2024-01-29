@@ -1,13 +1,13 @@
 package dev.line4.blackBoard.letter.service;
 
-import dev.line4.blackBoard.blackboard.dto.GetBlackBoardAndLetterDto;
-import dev.line4.blackBoard.blackboard.entity.BlackBoards;
+import dev.line4.blackBoard.blackboard.dto.ReadBlackBoardAndLettersDto;
+import dev.line4.blackBoard.blackboard.entity.BlackBoardEntity;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
-import dev.line4.blackBoard.letter.dto.CreateLetterDto;
-import dev.line4.blackBoard.letter.dto.ReadWriterDto;
-import dev.line4.blackBoard.letter.entity.Letters;
+import dev.line4.blackBoard.letter.dto.AddLetterDto;
+import dev.line4.blackBoard.letter.dto.GetLetterWritersDto;
+import dev.line4.blackBoard.letter.entity.LetterEntity;
 import dev.line4.blackBoard.letter.repository.LetterRepository;
-import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
+import dev.line4.blackBoard.lettersticker.entity.LetterStickerEntity;
 import dev.line4.blackBoard.lettersticker.repository.LetterStickerRepository;
 
 import java.util.List;
@@ -30,27 +30,27 @@ public class LetterServiceImpl implements LetterService {
     // 완료
     // 편지 생성하기
     @Override
-    public ResponseEntity<ApiResponse<?>> createLetter(String userId, CreateLetterDto.Req req) {
+    public ResponseEntity<ApiResponse<?>> addLetter(String userId, AddLetterDto.Req req) {
 
         // userId 로 칠판 찾기, 없으면 에러 응답
-        Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
+        Optional<BlackBoardEntity> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
         if(findBlackBoard.isEmpty()) {
             ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
         // 찾은 칠판 엔티티
-        BlackBoards foundBlackBoard = findBlackBoard.get();
+        BlackBoardEntity foundBlackBoard = findBlackBoard.get();
 
         // 편지 엔티티 생성
-        Letters letter = Letters.createLetter(req.getLetter());
+        LetterEntity letter = LetterEntity.createLetter(req.getLetter());
 
         // 편지 엔티티와 칠판 엔티티 연관관계 맺기
         letter.setBlackBoard(foundBlackBoard);
 
         // 편지 스티커 엔티티 생성, 편지 엔티티와 연관관계 맺기
-        for(CreateLetterDto.Req.Sticker sticker : req.getStickers()) {
-            LetterStickers stickers  = LetterStickers.createLetterSticker(sticker);
+        for(AddLetterDto.Req.Sticker sticker : req.getStickers()) {
+            LetterStickerEntity stickers  = LetterStickerEntity.createLetterSticker(sticker);
             stickers.setLetter(letter);
             letter.getLetterStickers().add(stickers);
         }
@@ -65,39 +65,39 @@ public class LetterServiceImpl implements LetterService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse<?>> readWriter(String userId) {
+    public ResponseEntity<ApiResponse<?>> getLetterWriters(String userId) {
 
         // userId 로 칠판 찾기, 없으면 에러 응답
-        Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
+        Optional<BlackBoardEntity> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
         if(findBlackBoard.isEmpty()) {
             ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
         // 편지들 찾기
-        BlackBoards foundBlackBoard = findBlackBoard.get();
-        List<Letters> letters = foundBlackBoard.getLetters();
+        BlackBoardEntity foundBlackBoard = findBlackBoard.get();
+        List<LetterEntity> letters = foundBlackBoard.getLetters();
 
         // 작성자만 추출
         List<String> writers = letters.stream()
-                .map(Letters::getNickname)
+                .map(LetterEntity::getNickname)
                 .collect(Collectors.toList());
 
         // 응답할 데이터 생성
-        ReadWriterDto.Res resData = ReadWriterDto.Res.builder()
+        GetLetterWritersDto.Res resData = GetLetterWritersDto.Res.builder()
                 .writers(writers)
                 .build();
 
-        ApiResponse<ReadWriterDto.Res> res = ApiResponse.createSuccessWithData(resData, "편지 작성자가 정상적으로 조회되었습니다.");
+        ApiResponse<GetLetterWritersDto.Res> res = ApiResponse.createSuccessWithData(resData, "편지 작성자가 정상적으로 조회되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     @Override
-    public List<GetBlackBoardAndLetterDto.Res.Letter> convertToLetterAndLetterStickerDtoList(List<Letters> letters) {
+    public List<ReadBlackBoardAndLettersDto.Res.Letter> convertToLetterAndLetterStickerDtoList(List<LetterEntity> letters) {
         return letters.stream().map(letter -> {
             // 편지 스티커 엔티티 가져오기 및 DTO 변환
-            List<GetBlackBoardAndLetterDto.Sticker> resLetterSticker = letter.getLetterStickers().stream()
-                    .map(letterSticker -> GetBlackBoardAndLetterDto.Sticker.builder()
+            List<ReadBlackBoardAndLettersDto.Sticker> resLetterSticker = letter.getLetterStickers().stream()
+                    .map(letterSticker -> ReadBlackBoardAndLettersDto.Sticker.builder()
                             .num(letterSticker.getNum())
                             .positionX(letterSticker.getPositionX())
                             .positionY(letterSticker.getPositionY())
@@ -109,7 +109,7 @@ public class LetterServiceImpl implements LetterService {
                     .collect(Collectors.toList());
 
             // 편지 DTO 구성
-            return GetBlackBoardAndLetterDto.Res.Letter.builder()
+            return ReadBlackBoardAndLettersDto.Res.Letter.builder()
                     .id(letter.getLetterId())
                     .nickname(letter.getNickname())
                     .content(letter.getContent())

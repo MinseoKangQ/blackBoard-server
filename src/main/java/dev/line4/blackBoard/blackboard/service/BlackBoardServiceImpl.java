@@ -1,13 +1,13 @@
 package dev.line4.blackBoard.blackboard.service;
 
-import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
-import dev.line4.blackBoard.blackboard.dto.GetBlackBoardAndLetterDto;
-import dev.line4.blackBoard.blackboard.dto.GetBlackBoardCountDto;
-import dev.line4.blackBoard.blackboard.entity.BlackBoards;
+import dev.line4.blackBoard.blackboard.dto.AddBlackBoardDto;
+import dev.line4.blackBoard.blackboard.dto.ReadBlackBoardAndLettersDto;
+import dev.line4.blackBoard.blackboard.dto.CountBlackBoardsDto;
+import dev.line4.blackBoard.blackboard.entity.BlackBoardEntity;
 import dev.line4.blackBoard.blackboard.repository.BlackBoardRepository;
-import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
+import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickerEntity;
 import dev.line4.blackBoard.blackboardsticker.service.BlackBoardStickerServiceImpl;
-import dev.line4.blackBoard.letter.entity.Letters;
+import dev.line4.blackBoard.letter.entity.LetterEntity;
 import dev.line4.blackBoard.letter.service.LetterServiceImpl;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import java.util.List;
@@ -31,29 +31,29 @@ public class BlackBoardServiceImpl implements BlackBoardService {
     // 완료
     // 생성된 칠판의 개수 가져오기
     @Override
-    public ResponseEntity<ApiResponse<?>> getBlackBoardCount() {
-        GetBlackBoardCountDto.Res data = new GetBlackBoardCountDto.Res(blackBoardRepository.count());
-        ApiResponse<GetBlackBoardCountDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 개수 조회 성공");
+    public ResponseEntity<ApiResponse<?>> countBlackBoards() {
+        CountBlackBoardsDto.Res data = new CountBlackBoardsDto.Res(blackBoardRepository.count());
+        ApiResponse<CountBlackBoardsDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 개수 조회 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
     }
 
     // 완료
     // 칠판 생성하기
     @Override
-    public ResponseEntity<ApiResponse<?>> createBlackBoard(CreateBlackBoardDto.Req req) {
+    public ResponseEntity<ApiResponse<?>> addBlackBoard(AddBlackBoardDto.Req req) {
 
         // 칠판 엔티티 생성
-        BlackBoards blackBoard = BlackBoards.createBlackBoard(req);
+        BlackBoardEntity blackBoard = BlackBoardEntity.createBlackBoard(req);
 
         // 칠판 엔티티 저장 (** 칠판 저장 후 칠판 스티커 저장 **)
         blackBoardRepository.save(blackBoard);
 
         // 칠판 스티커 엔티티 저장 + 칠판 엔티티와 연관관계
-        List<BlackBoardStickers> stickers = blackBoardStickerService.createStickers(req.getStickers(), blackBoard);
+        List<BlackBoardStickerEntity> stickers = blackBoardStickerService.createStickers(req.getStickers(), blackBoard);
 
         // 응답할 데이터 생성
-        CreateBlackBoardDto.Res data = new CreateBlackBoardDto.Res(req.getBlackboard().getUserId());
-        ApiResponse<CreateBlackBoardDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 생성 성공");
+        AddBlackBoardDto.Res data = new AddBlackBoardDto.Res(req.getBlackboard().getUserId());
+        ApiResponse<AddBlackBoardDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 생성 성공");
         return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
@@ -61,35 +61,35 @@ public class BlackBoardServiceImpl implements BlackBoardService {
     // 완료
     // 칠판, 편지 조회
     @Override
-    public ResponseEntity<ApiResponse<?>> getBlackBoardAndLetter(String userId) {
+    public ResponseEntity<ApiResponse<?>> readBlackBoardAndLetters(String userId) {
 
         // 칠판 찾기, 없으면 404
-        Optional<BlackBoards> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
+        Optional<BlackBoardEntity> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
         if(findBlackBoard.isEmpty()) {
             ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         }
 
         // 칠판 엔티티 가져오기
-        BlackBoards foundBlackBoard = findBlackBoard.get();
+        BlackBoardEntity foundBlackBoard = findBlackBoard.get();
 
         // 칠판 스티커 엔티티 가져오기
-        List<BlackBoardStickers> blackBoardStickers = foundBlackBoard.getBlackBoardStickers();
+        List<BlackBoardStickerEntity> blackBoardStickers = foundBlackBoard.getBlackBoardStickers();
 
         // 편지 엔티티 가져오기
-        List<Letters> letters = foundBlackBoard.getLetters();
+        List<LetterEntity> letters = foundBlackBoard.getLetters();
 
         // 칠판 스티커 응답 (dto)
-        List<GetBlackBoardAndLetterDto.Sticker> resBlackBoardSticker = blackBoardStickerService.convertToBlackBoardStickerDtoList(foundBlackBoard);
+        List<ReadBlackBoardAndLettersDto.Sticker> resBlackBoardSticker = blackBoardStickerService.convertToBlackBoardStickerDtoList(foundBlackBoard);
 
         // 칠판 응답 (dto)
-        GetBlackBoardAndLetterDto.Res.BlackBoard resBlackBoard = convertToBlackBoardDto(foundBlackBoard, resBlackBoardSticker);
+        ReadBlackBoardAndLettersDto.Res.BlackBoard resBlackBoard = convertToBlackBoardDto(foundBlackBoard, resBlackBoardSticker);
 
         // 편지 + 편지 스티커 응답 (dto)
-        List<GetBlackBoardAndLetterDto.Res.Letter> resLetter = letterService.convertToLetterAndLetterStickerDtoList(letters);
+        List<ReadBlackBoardAndLettersDto.Res.Letter> resLetter = letterService.convertToLetterAndLetterStickerDtoList(letters);
 
         // 응답 데이터 생성
-        GetBlackBoardAndLetterDto.Res data = GetBlackBoardAndLetterDto.Res.builder()
+        ReadBlackBoardAndLettersDto.Res data = ReadBlackBoardAndLettersDto.Res.builder()
                 .blackboard(resBlackBoard) // 칠판 + 칠판 스티커
                 .letter(resLetter) // 편지 + 편지 스티커
                 .build();
@@ -114,8 +114,8 @@ public class BlackBoardServiceImpl implements BlackBoardService {
         }
     }
 
-    private static GetBlackBoardAndLetterDto.Res.BlackBoard convertToBlackBoardDto(BlackBoards foundBlackBoard, List<GetBlackBoardAndLetterDto.Sticker> resBlackBoardSticker) {
-        return GetBlackBoardAndLetterDto.Res.BlackBoard.builder()
+    private static ReadBlackBoardAndLettersDto.Res.BlackBoard convertToBlackBoardDto(BlackBoardEntity foundBlackBoard, List<ReadBlackBoardAndLettersDto.Sticker> resBlackBoardSticker) {
+        return ReadBlackBoardAndLettersDto.Res.BlackBoard.builder()
                 .title(foundBlackBoard.getTitle())
                 .introduction(foundBlackBoard.getIntroduction())
                 .userId(foundBlackBoard.getUserId())

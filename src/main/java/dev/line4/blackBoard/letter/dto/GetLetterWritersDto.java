@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-public class ReadWriterDto {
+public class GetLetterWritersDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

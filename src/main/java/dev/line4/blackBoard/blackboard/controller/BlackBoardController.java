@@ -1,6 +1,6 @@
 package dev.line4.blackBoard.blackboard.controller;
 
-import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
+import dev.line4.blackBoard.blackboard.dto.AddBlackBoardDto;
 import dev.line4.blackBoard.blackboard.service.BlackBoardServiceImpl;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import io.swagger.annotations.Api;
@@ -25,27 +25,28 @@ public class BlackBoardController {
     // 완료
     @GetMapping("blackboards")
     @ApiOperation(value = "칠판 개수", notes = "현재까지 생성된 칠판의 개수를 리턴합니다.")
-    public ResponseEntity<ApiResponse<?>> getBlackBoardCount() {
-        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.getBlackBoardCount();
+    public ResponseEntity<ApiResponse<?>> countBlackBoards() {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.countBlackBoards();
         return result;
     }
 
     // 완료
     @PostMapping("blackboard")
     @ApiOperation(value = "칠판 생성", notes = "칠판을 생성할 때 호출합니다.")
-    public ResponseEntity<ApiResponse<?>> createBlackBoard(@RequestBody CreateBlackBoardDto.Req req) {
-        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.createBlackBoard(req);
+    public ResponseEntity<ApiResponse<?>> addBlackBoard(@RequestBody AddBlackBoardDto.Req req) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.addBlackBoard(req);
         return result;
     }
 
     // 완료
     @GetMapping("blackboard")
     @ApiOperation(value = "칠판과 편지", notes = "칠판을 조회할 때 호출합니다.")
-    public ResponseEntity<ApiResponse<?>> getBlackBoardAndLetter(@RequestParam("userId") String userId) {
-        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.getBlackBoardAndLetter(userId);
+    public ResponseEntity<ApiResponse<?>> readBlackBoardAndLetters(@RequestParam("userId") String userId) {
+        ResponseEntity<ApiResponse<?>> result = blackBoardServiceImpl.readBlackBoardAndLetters(userId);
         return result;
     }
 
+    // 완료
     @GetMapping("check-duplicate")
     @ApiOperation(value = "userId 중복 확인", notes = "userId를 입력받은 후 호출합니다.")
     public ResponseEntity<ApiResponse<?>> checkDuplicateUserId(@RequestParam("userId") String userId) {

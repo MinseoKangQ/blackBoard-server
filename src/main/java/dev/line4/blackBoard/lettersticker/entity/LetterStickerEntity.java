@@ -1,8 +1,8 @@
 package dev.line4.blackBoard.lettersticker.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.line4.blackBoard.letter.dto.CreateLetterDto;
-import dev.line4.blackBoard.letter.entity.Letters;
+import dev.line4.blackBoard.letter.dto.AddLetterDto;
+import dev.line4.blackBoard.letter.entity.LetterEntity;
 import dev.line4.blackBoard.utils.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +27,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "LETTER_STICKERS")
-public class LetterStickers extends BaseEntity {
+public class LetterStickerEntity extends BaseEntity {
 
     @Id
     @Column(name = "letter_sticker_id")
@@ -58,10 +58,10 @@ public class LetterStickers extends BaseEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "letter_id")
-    private Letters letter;
+    private LetterEntity letter;
 
     // 생성 메서드
-    public static LetterStickers createLetterSticker(CreateLetterDto.Req.Sticker dto) {
+    public static LetterStickerEntity createLetterSticker(AddLetterDto.Req.Sticker dto) {
         return dto.toEntity();
     }
 }
