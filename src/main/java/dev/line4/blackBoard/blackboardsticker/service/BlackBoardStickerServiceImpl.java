@@ -1,9 +1,9 @@
 package dev.line4.blackBoard.blackboardsticker.service;
 
-import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
-import dev.line4.blackBoard.blackboard.dto.GetBlackBoardAndLetterDto;
-import dev.line4.blackBoard.blackboard.entity.BlackBoards;
-import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickers;
+import dev.line4.blackBoard.blackboard.dto.AddBlackBoardDto;
+import dev.line4.blackBoard.blackboard.dto.ReadBlackBoardAndLettersDto;
+import dev.line4.blackBoard.blackboard.entity.BlackBoardEntity;
+import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickerEntity;
 import dev.line4.blackBoard.blackboardsticker.repository.BlackBoardStickerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,12 +17,12 @@ public class BlackBoardStickerServiceImpl implements BlackBoardStickerService {
 
     private final BlackBoardStickerRepository blackBoardStickerRepository;
 
-    public List<BlackBoardStickers> createStickers(List<CreateBlackBoardDto.Req.Sticker> stickerList, BlackBoards blackBoard) {
+    public List<BlackBoardStickerEntity> createStickers(List<AddBlackBoardDto.Req.Sticker> stickerList, BlackBoardEntity blackBoard) {
 
         // 스티커 엔티티 생성 및 초기화
-        List<BlackBoardStickers> stickers = stickerList.stream()
+        List<BlackBoardStickerEntity> stickers = stickerList.stream()
                 .map(stickerDto -> {
-                    BlackBoardStickers sticker = BlackBoardStickers.createBlackBoardSticker(stickerDto);
+                    BlackBoardStickerEntity sticker = BlackBoardStickerEntity.createBlackBoardSticker(stickerDto);
                     sticker.setBlackBoard(blackBoard);
                     return sticker;
                 })
@@ -35,9 +35,9 @@ public class BlackBoardStickerServiceImpl implements BlackBoardStickerService {
     }
 
     // 칠판 스티커 DTO 변환 메서드
-    public List<GetBlackBoardAndLetterDto.Sticker> convertToBlackBoardStickerDtoList(BlackBoards blackBoard) {
+    public List<ReadBlackBoardAndLettersDto.Sticker> convertToBlackBoardStickerDtoList(BlackBoardEntity blackBoard) {
         return blackBoard.getBlackBoardStickers().stream()
-                .map(sticker -> GetBlackBoardAndLetterDto.Sticker.builder()
+                .map(sticker -> ReadBlackBoardAndLettersDto.Sticker.builder()
                         .num(sticker.getNum())
                         .positionX(sticker.getPositionX())
                         .positionY(sticker.getPositionY())

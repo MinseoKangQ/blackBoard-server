@@ -3,7 +3,7 @@ package dev.line4.blackBoard.blackboard.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
-public class GetBlackBoardCountDto {
+public class CountBlackBoardsDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)

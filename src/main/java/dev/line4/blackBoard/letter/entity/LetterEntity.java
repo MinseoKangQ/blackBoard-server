@@ -1,12 +1,11 @@
 package dev.line4.blackBoard.letter.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.line4.blackBoard.blackboard.entity.BlackBoards;
-import dev.line4.blackBoard.letter.dto.CreateLetterDto;
-import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
+import dev.line4.blackBoard.blackboard.entity.BlackBoardEntity;
+import dev.line4.blackBoard.letter.dto.AddLetterDto;
+import dev.line4.blackBoard.lettersticker.entity.LetterStickerEntity;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +27,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "LETTER")
-public class Letters extends BaseEntity {
+public class LetterEntity extends BaseEntity {
 
     @Id
     @Column(name = "letter_id")
@@ -50,20 +49,20 @@ public class Letters extends BaseEntity {
     @JsonIgnore
     @JoinColumn(name = "board_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private BlackBoards blackboard; // FK
+    private BlackBoardEntity blackboard; // FK
 
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "letter", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<LetterStickers> letterStickers = new ArrayList<>();
+    private List<LetterStickerEntity> letterStickers = new ArrayList<>();
 
     // 생성 메서드
-    public static Letters createLetter(CreateLetterDto.Req.Letter req) {
+    public static LetterEntity createLetter(AddLetterDto.Req.Letter req) {
         return req.toEntity();
     }
 
     // 연관관계 메서드
-    public void setBlackBoard(BlackBoards blackBoard) {
+    public void setBlackBoard(BlackBoardEntity blackBoard) {
         this.blackboard = blackBoard;
         blackBoard.getLetters().add(this);
     }

@@ -1,7 +1,7 @@
 package dev.line4.blackBoard.blackboardsticker.entity;
 
-import dev.line4.blackBoard.blackboard.dto.CreateBlackBoardDto;
-import dev.line4.blackBoard.blackboard.entity.BlackBoards;
+import dev.line4.blackBoard.blackboard.dto.AddBlackBoardDto;
+import dev.line4.blackBoard.blackboard.entity.BlackBoardEntity;
 
 import javax.persistence.*;
 
@@ -14,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "BLACKBOARD_STICKERS")
-public class BlackBoardStickers extends BaseEntity {
+public class BlackBoardStickerEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,15 +42,15 @@ public class BlackBoardStickers extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
-    private BlackBoards board;
+    private BlackBoardEntity board;
 
     // 생성 메서드
-    public static BlackBoardStickers createBlackBoardSticker(CreateBlackBoardDto.Req.Sticker req) {
+    public static BlackBoardStickerEntity createBlackBoardSticker(AddBlackBoardDto.Req.Sticker req) {
         return req.toEntity();
     }
 
     // 연관관계 편의 메서드
-    public void setBlackBoard(BlackBoards blackBoard) {
+    public void setBlackBoard(BlackBoardEntity blackBoard) {
         this.board = blackBoard;
         board.getBlackBoardStickers().add(this);
     }

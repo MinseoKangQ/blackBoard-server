@@ -1,7 +1,7 @@
-package dev.line4.blackBoard.letter.dto;
+package dev.line4.blackBoard.blackboard.dto;
 
-import dev.line4.blackBoard.letter.entity.Letters;
-import dev.line4.blackBoard.lettersticker.entity.LetterStickers;
+import dev.line4.blackBoard.blackboard.entity.BlackBoardEntity;
+import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickerEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,38 +9,30 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-public class CreateLetterDto {
+public class AddBlackBoardDto {
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class Req {
 
-        private Letter letter;
+        private BlackBoard blackboard;
         private List<Sticker> stickers;
 
         @Getter
         @NoArgsConstructor(access = AccessLevel.PROTECTED)
-        public static class Letter {
-            private String nickname;
-            private String content;
-            private String font;
-            private String align;
+        public static class BlackBoard {
+            private String title;
+            private String introduction;
+            private String userId;
+            private String openDate;
 
-            public Letters toEntity() {
-                return Letters.builder()
-                        .nickname(this.nickname)
-                        .content(this.content)
-                        .font(this.font)
-                        .align(this.align)
+            public BlackBoardEntity toEntity() {
+                return BlackBoardEntity.builder()
+                        .title(this.title)
+                        .introduction(this.introduction)
+                        .userId(this.userId)
+                        .openDate(this.openDate)
                         .build();
-            }
-
-            @Builder
-            public Letter(String nickname, String content, String font, String align) {
-                this.nickname = nickname;
-                this.content = content;
-                this.font = font;
-                this.align = align;
             }
         }
 
@@ -55,8 +47,8 @@ public class CreateLetterDto {
             private Double angle;
             private Long mirror;
 
-            public LetterStickers toEntity() {
-                return LetterStickers.builder()
+            public BlackBoardStickerEntity toEntity() {
+                return BlackBoardStickerEntity.builder()
                         .num(this.num)
                         .positionX(this.positionX)
                         .positionY(this.positionY)
@@ -66,6 +58,19 @@ public class CreateLetterDto {
                         .mirror(this.mirror)
                         .build();
             }
+        }
+
+    }
+
+    @Getter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class Res {
+
+        private String userId;
+
+        @Builder
+        public Res(String userId) {
+            this.userId = userId;
         }
     }
 }
