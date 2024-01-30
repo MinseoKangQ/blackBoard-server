@@ -20,7 +20,7 @@ public class CorsWithSecurityConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    @Bean // 어떤 보약 제약 없이 모든 요청 수락
+    @Bean // CSRF 설정 정의 - 어떤 제약 없이 모든 요청 수락
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable(); // CSRF 보호 비활성화
         http.authorizeRequests().anyRequest().permitAll(); // 모든 요청 수락
