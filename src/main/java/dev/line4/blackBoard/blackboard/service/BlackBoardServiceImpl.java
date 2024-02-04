@@ -9,6 +9,7 @@ import dev.line4.blackBoard.blackboardsticker.entity.BlackBoardStickerEntity;
 import dev.line4.blackBoard.blackboardsticker.service.BlackBoardStickerServiceImpl;
 import dev.line4.blackBoard.letter.entity.LetterEntity;
 import dev.line4.blackBoard.letter.service.LetterServiceImpl;
+import dev.line4.blackBoard.utils.exception.service.ServiceUtils;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import java.util.List;
 import java.util.Optional;
@@ -63,15 +64,11 @@ public class BlackBoardServiceImpl implements BlackBoardService {
     @Override
     public ResponseEntity<ApiResponse<?>> readBlackBoardAndLetters(String userId) {
 
-        // 칠판 찾기, 없으면 404
-        Optional<BlackBoardEntity> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
-        if(findBlackBoard.isEmpty()) {
-            ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-        }
-
-        // 칠판 엔티티 가져오기
-        BlackBoardEntity foundBlackBoard = findBlackBoard.get();
+        // 칠판 찾고 가져오기
+        BlackBoardEntity foundBlackBoard = ServiceUtils.getEntityOrThrow(
+                blackBoardRepository.findBlackBoardsByUserId(userId),
+                "칠판을 찾을 수 없습니다."
+        );
 
         // 칠판 스티커 엔티티 가져오기
         List<BlackBoardStickerEntity> blackBoardStickers = foundBlackBoard.getBlackBoardStickers();

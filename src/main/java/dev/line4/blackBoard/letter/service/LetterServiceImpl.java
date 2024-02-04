@@ -13,6 +13,8 @@ import dev.line4.blackBoard.lettersticker.repository.LetterStickerRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import dev.line4.blackBoard.utils.exception.service.ServiceUtils;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,15 +34,11 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public ResponseEntity<ApiResponse<?>> addLetter(String userId, AddLetterDto.Req req) {
 
-        // userId 로 칠판 찾기, 없으면 에러 응답
-        Optional<BlackBoardEntity> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
-        if(findBlackBoard.isEmpty()) {
-            ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-        }
-
-        // 찾은 칠판 엔티티
-        BlackBoardEntity foundBlackBoard = findBlackBoard.get();
+        // 칠판 찾고 가져오기
+        BlackBoardEntity foundBlackBoard = ServiceUtils.getEntityOrThrow(
+                blackBoardRepository.findBlackBoardsByUserId(userId),
+                "칠판을 찾을 수 없습니다."
+        );
 
         // 편지 엔티티 생성
         LetterEntity letter = LetterEntity.createLetter(req.getLetter());
@@ -67,15 +65,13 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public ResponseEntity<ApiResponse<?>> getLetterWriters(String userId) {
 
-        // userId 로 칠판 찾기, 없으면 에러 응답
-        Optional<BlackBoardEntity> findBlackBoard = blackBoardRepository.findBlackBoardsByUserId(userId);
-        if(findBlackBoard.isEmpty()) {
-            ApiResponse<Object> res = ApiResponse.createFailWithoutData(404, "칠판을 찾을 수 없습니다.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
-        }
+        // 칠판 찾고 가져오기
+        BlackBoardEntity foundBlackBoard = ServiceUtils.getEntityOrThrow(
+                blackBoardRepository.findBlackBoardsByUserId(userId),
+                "칠판을 찾을 수 없습니다."
+        );
 
         // 편지들 찾기
-        BlackBoardEntity foundBlackBoard = findBlackBoard.get();
         List<LetterEntity> letters = foundBlackBoard.getLetters();
 
         // 작성자만 추출

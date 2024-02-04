@@ -1,5 +1,6 @@
-package dev.line4.blackBoard.utils.exception;
+package dev.line4.blackBoard.utils.exception.global;
 
+import dev.line4.blackBoard.utils.exception.custom.EntityNotFoundException;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), errorMessage));
+    }
+
+
+    // Custom Exception
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleEntityNotFoundException(EntityNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ApiResponse.createFailWithoutData(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 
 }
