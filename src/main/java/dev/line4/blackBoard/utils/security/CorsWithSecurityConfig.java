@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class CorsWithSecurityConfig implements WebMvcConfigurer {
 
     @Override // CORS 설정 정의 - 특정 출처 ("http://localhost:3000") 에서 오는 특정 HTTP 메소드 허용
