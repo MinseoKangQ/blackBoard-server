@@ -53,7 +53,7 @@ public class BlackBoardServiceImpl implements BlackBoardService {
 
         // 응답할 데이터 생성
         AddBlackBoardDto.Res data = new AddBlackBoardDto.Res(req.getBlackboard().getUserId());
-        ApiResponse<AddBlackBoardDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판 생성 성공");
+        ApiResponse<AddBlackBoardDto.Res> res = ApiResponse.createSuccessWithData(data, "칠판이 정상적으로 등록되었습니다.");
         return ResponseEntity.status(HttpStatus.OK).body(res);
 
     }
