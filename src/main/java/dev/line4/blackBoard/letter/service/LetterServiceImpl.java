@@ -110,7 +110,7 @@ public class LetterServiceImpl implements LetterService {
 
             // 편지 DTO 구성
             return ReadBlackBoardAndLettersDto.Res.Letter.builder()
-                    .id(letter.getLetterId())
+                    .id(letter.getId())
                     .nickname(letter.getNickname())
                     .content(letter.getContent())
                     .font(letter.getFont())

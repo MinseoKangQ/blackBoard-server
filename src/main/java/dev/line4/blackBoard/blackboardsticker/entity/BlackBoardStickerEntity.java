@@ -16,8 +16,8 @@ import lombok.*;
 @Table(name = "BLACKBOARD_STICKERS")
 public class BlackBoardStickerEntity extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "blackboard_sticker_id")
     private Long id;
 
     private Long num;
@@ -41,8 +41,8 @@ public class BlackBoardStickerEntity extends BaseEntity {
     private Long mirror;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
-    private BlackBoardEntity board;
+    @JoinColumn(name = "blackboard_id")
+    private BlackBoardEntity blackboard;
 
     // 생성 메서드
     public static BlackBoardStickerEntity createBlackBoardSticker(AddBlackBoardDto.Req.Sticker req) {
@@ -51,8 +51,8 @@ public class BlackBoardStickerEntity extends BaseEntity {
 
     // 연관관계 편의 메서드
     public void setBlackBoard(BlackBoardEntity blackBoard) {
-        this.board = blackBoard;
-        board.getBlackBoardStickers().add(this);
+        this.blackboard = blackBoard;
+        blackboard.getBlackBoardStickers().add(this);
     }
 
 }

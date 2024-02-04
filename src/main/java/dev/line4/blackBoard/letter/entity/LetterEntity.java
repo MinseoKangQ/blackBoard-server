@@ -29,10 +29,9 @@ import lombok.*;
 @Table(name = "LETTER")
 public class LetterEntity extends BaseEntity {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "letter_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long letterId;
+    private Long id;
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
