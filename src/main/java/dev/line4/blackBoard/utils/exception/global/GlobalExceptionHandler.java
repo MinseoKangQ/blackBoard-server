@@ -1,5 +1,6 @@
 package dev.line4.blackBoard.utils.exception.global;
 
+import dev.line4.blackBoard.utils.exception.custom.BlackboardEntityDuplicateException;
 import dev.line4.blackBoard.utils.exception.custom.EntityNotFoundException;
 import dev.line4.blackBoard.utils.response.ApiResponse;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -44,6 +45,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ApiResponse.createFailWithoutData(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
+    @ExceptionHandler(BlackboardEntityDuplicateException.class)
+    public ResponseEntity<ApiResponse<?>> handleBlackboardEntityDuplicateException(BlackboardEntityDuplicateException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.createFailWithoutData(HttpStatus.BAD_REQUEST.value(), e. getMessage()));
     }
 
 }
