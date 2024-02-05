@@ -71,4 +71,37 @@ public class BlackBoardControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @Test
+    @DisplayName("칠판 등록 - 실패")
+    @Transactional // 테스트 완료 후 rollback
+    void addBlackBoardTestFail() throws Exception {
+
+        // JSON 데이터 문자열
+        String jsonContent = "{"
+                + "\"blackboard\" : {"
+                + "    \"title\" : \"제목제목\","
+                + "    \"introduction\" : \"소개소개\","
+                + "    \"userId\" : \"duplicateUserTest\","
+                + "    \"openDate\" : \"2024-02-20T18:00:00\""
+                + "},"
+                + "\"stickers\" : ["
+                + "]"
+                + "}";
+
+        // 첫 번째 요청은 성공
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+
+        // 두 번째 요청은 실패
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
 }
