@@ -104,4 +104,70 @@ public class BlackBoardControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("칠판 id 중복 검증 - 성공1")
+    @Transactional
+    void checkDuplicateUserIdTestSuccess1() throws Exception{
+
+        String userId1 = "thisIsDuplicateTestId1";
+        String userId2 = "thisIsDuplicateTestId2";
+
+        // 첫 번째 요청 성공
+        mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", userId1))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // 두 번째 요청 성공
+        mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", userId2))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DisplayName("칠판 id 중복 검증 - 성공2")
+    @Transactional
+    void checkDuplicateUserIdTestSuccess2() throws Exception{
+
+        String userId = "thisIsDuplicateTestId";
+
+        // JSON 데이터 문자열
+        String jsonContent = "{"
+                + "\"blackboard\" : {"
+                + "    \"title\" : \"제목제목\","
+                + "    \"introduction\" : \"소개소개\","
+                + "    \"userId\" : "
+                + "\"thisIsDuplicateTestId\","
+                + "    \"openDate\" : \"2024-02-20T18:00:00\""
+                + "},"
+                + "\"stickers\" : ["
+                + "]"
+                + "}";
+
+
+        // 첫 번째 요청 성공
+        mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", userId))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // 칠판 만들기
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // 두 번째 요청 실패
+        mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", userId))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
 }
