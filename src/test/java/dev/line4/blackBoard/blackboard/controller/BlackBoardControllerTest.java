@@ -105,12 +105,36 @@ public class BlackBoardControllerTest {
     }
 
     @Test
-    @DisplayName("칠판 id 중복 검증 - 성공1")
+    @DisplayName("칠판 id 중복 검증 - 성공")
     @Transactional
-    void checkDuplicateUserIdTestSuccess1() throws Exception{
+    void checkDuplicateUserIdTestSuccess() throws Exception{
 
         String userId1 = "thisIsDuplicateTestId1";
         String userId2 = "thisIsDuplicateTestId2";
+
+        // JSON 데이터 문자열
+        String jsonContent1 = "{"
+                + "\"blackboard\" : {"
+                + "    \"title\" : \"제목제목\","
+                + "    \"introduction\" : \"소개소개\","
+                + "    \"userId\" : \"thisIsDuplicateTestId1\","
+                + "    \"openDate\" : \"2024-02-20T18:00:00\""
+                + "},"
+                + "\"stickers\" : ["
+                + "]"
+                + "}";
+
+        // JSON 데이터 문자열
+        String jsonContent2 = "{"
+                + "\"blackboard\" : {"
+                + "    \"title\" : \"제목제목\","
+                + "    \"introduction\" : \"소개소개\","
+                + "    \"userId\" : \"thisIsDuplicateTestId2\","
+                + "    \"openDate\" : \"2024-02-20T18:00:00\""
+                + "},"
+                + "\"stickers\" : ["
+                + "]"
+                + "}";
 
         // 첫 번째 요청 성공
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
@@ -119,18 +143,33 @@ public class BlackBoardControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
+        // 첫 번째 요청 성공
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent1)) // JSON 데이터 요청 본문에 포함
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+
         // 두 번째 요청 성공
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", userId2))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // 두 번째 요청 성공
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent2)) // JSON 데이터 요청 본문에 포함
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DisplayName("칠판 id 중복 검증 - 성공2")
+    @DisplayName("칠판 id 중복 검증 - 실패")
     @Transactional
-    void checkDuplicateUserIdTestSuccess2() throws Exception{
+    void checkDuplicateUserIdTestFail() throws Exception{
 
         String userId = "thisIsDuplicateTestId";
 
@@ -166,6 +205,13 @@ public class BlackBoardControllerTest {
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", userId))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        // 칠판 만들기
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
