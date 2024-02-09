@@ -25,8 +25,8 @@ class LetterControllerTest {
 
     @Test
     @Transactional
-    @DisplayName("편지 작성자 목록 조회 - 성공(0명)")
-    void getLetterWritersTestSuccess0() throws Exception {
+    @DisplayName("편지 작성자 조회 0명 - 200")
+    void getLetterWriters0_200() throws Exception {
 
         // 칠판 등록
         registerBlackboard();
@@ -42,8 +42,8 @@ class LetterControllerTest {
 
     @Test
     @Transactional
-    @DisplayName("편지 작성자 목록 조회 - 성공(2명)")
-    void getLetterWritersTestSuccess2() throws Exception {
+    @DisplayName("편지 작성자 조회 2명 - 200")
+    void getLetterWriters2_200() throws Exception {
 
         // 칠판 등록
         registerBlackboard();
@@ -64,9 +64,9 @@ class LetterControllerTest {
     }
 
     @Test
-    @DisplayName("편지 작성자 조회 - 실패")
+    @DisplayName("편지 작성자 조회 - 404")
     @Transactional
-    void getLetterWritersTestFail() throws Exception {
+    void getLetterWriters_404() throws Exception {
 
         // 존재하지 않는 칠판으로 요청을 보낸 경우 404
         mvc.perform(MockMvcRequestBuilders.get("/api/writer")
@@ -77,9 +77,9 @@ class LetterControllerTest {
     }
 
     @Test
-    @DisplayName("편지 작성 - 성공")
+    @DisplayName("편지 작성 - 200")
     @Transactional
-    void addLetterSuccess() throws Exception {
+    void addLetter_200() throws Exception {
 
         // 칠판 등록
         registerBlackboard();
@@ -94,9 +94,9 @@ class LetterControllerTest {
     }
 
     @Test
-    @DisplayName("편지 작성 - 실패")
+    @DisplayName("편지 작성 - 404")
     @Transactional
-    void addLetterFail() throws Exception {
+    void addLetter_404() throws Exception {
 
         // 편지 등록 - 등록되지 않은 칠판에 편지를 작성하므로 404
         mvc.perform(MockMvcRequestBuilders.post("/api/letter")

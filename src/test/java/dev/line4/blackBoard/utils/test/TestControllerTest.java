@@ -23,8 +23,8 @@ class TestControllerTest {
 
     @Test
     @Transactional
-    @DisplayName("존재하지 않는 API 요청")
-    void notFound() throws Exception{
+    @DisplayName("존재하지 않는 API 요청 - 404")
+    void notFound_404() throws Exception{
 
         mvc.perform(MockMvcRequestBuilders.post("/non-exist-path"))
                 .andDo(print())
