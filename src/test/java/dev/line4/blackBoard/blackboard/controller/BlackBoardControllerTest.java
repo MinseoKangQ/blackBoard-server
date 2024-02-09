@@ -13,8 +13,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 
+import static dev.line4.blackBoard.JsonString.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,77 +26,34 @@ public class BlackBoardControllerTest {
     MockMvc mvc;
 
     @Test
-    @DisplayName("칠판 개수 조회 - 성공")
-    void countBlackBoardsTestSuccess () throws Exception {
+    @DisplayName("칠판 개수 조회 - 200")
+    void countBlackBoards_200 () throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/blackboards").contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.blackboardCount", is(0)));
     }
 
     @Test
-    @DisplayName("칠판 등록 - 성공")
-    @Transactional // 테스트 완료 후 rollback
-    void addBlackBoardTestSuccess() throws Exception {
-
-        // JSON 데이터 문자열
-        String jsonContent = "{"
-                + "\"blackboard\" : {"
-                + "    \"title\" : \"칠판 안녕\","
-                + "    \"introduction\" : \"칠판 소개\","
-                + "    \"userId\" : \"testttttttttttttttttttttt\","
-                + "    \"openDate\" : \"2024-02-20T18:00:00\""
-                + "},"
-                + "\"stickers\" : ["
-                + "    {"
-                + "        \"num\" : 1,"
-                + "        \"positionX\" : 0.1,"
-                + "        \"positionY\" : 0.2,"
-                + "        \"img\" : 3,"
-                + "        \"width\" : 1.5,"
-                + "        \"angle\" : 0.5,"
-                + "        \"mirror\" : -1"
-                + "    },"
-                + "    {"
-                + "        \"num\" : 2,"
-                + "        \"positionX\" : 0.3,"
-                + "        \"positionY\" : 0.4,"
-                + "        \"img\" : 7,"
-                + "        \"width\" : 1.2,"
-                + "        \"angle\" : 0.7,"
-                + "        \"mirror\" : 1"
-                + "    }"
-                + "]"
-                + "}";
-
-        // POST 요청 구성 및 실행
+    @DisplayName("칠판 등록 - 200")
+    @Transactional
+    void addBlackBoard_200() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_CONTENT))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DisplayName("칠판 등록 - 실패")
-    @Transactional // 테스트 완료 후 rollback
-    void addBlackBoardTestFail() throws Exception {
-
-        // JSON 데이터 문자열
-        String jsonContent = "{"
-                + "\"blackboard\" : {"
-                + "    \"title\" : \"제목제목\","
-                + "    \"introduction\" : \"소개소개\","
-                + "    \"userId\" : \"duplicateUserTest\","
-                + "    \"openDate\" : \"2024-02-20T18:00:00\""
-                + "},"
-                + "\"stickers\" : ["
-                + "]"
-                + "}";
+    @DisplayName("칠판 등록 - 400")
+    @Transactional
+    void addBlackBoard_400() throws Exception {
 
         // 첫 번째 요청은 성공
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_DUPLICATE))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -102,164 +61,97 @@ public class BlackBoardControllerTest {
         // 두 번째 요청은 실패
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_DUPLICATE))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    @DisplayName("칠판 id 중복 검증 - 성공")
+    @DisplayName("칠판 id 중복 검증 - 200")
     @Transactional
-    void checkDuplicateUserIdTestSuccess() throws Exception{
+    void checkDuplicateUserId_200() throws Exception{
 
-        String userId1 = "thisIsDuplicateTestId1";
-        String userId2 = "thisIsDuplicateTestId2";
-
-        // JSON 데이터 문자열
-        String jsonContent1 = "{"
-                + "\"blackboard\" : {"
-                + "    \"title\" : \"제목제목\","
-                + "    \"introduction\" : \"소개소개\","
-                + "    \"userId\" : \"thisIsDuplicateTestId1\","
-                + "    \"openDate\" : \"2024-02-20T18:00:00\""
-                + "},"
-                + "\"stickers\" : ["
-                + "]"
-                + "}";
-
-        // JSON 데이터 문자열
-        String jsonContent2 = "{"
-                + "\"blackboard\" : {"
-                + "    \"title\" : \"제목제목\","
-                + "    \"introduction\" : \"소개소개\","
-                + "    \"userId\" : \"thisIsDuplicateTestId2\","
-                + "    \"openDate\" : \"2024-02-20T18:00:00\""
-                + "},"
-                + "\"stickers\" : ["
-                + "]"
-                + "}";
-
-        // 첫 번째 요청 성공
+        // thisIsDuplicateTestId1 검증 성공
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", userId1))
+                        .param("userId", "thisIsDuplicateTestId1"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        // 첫 번째 요청 성공
+        // 칠판 생성 성공
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent1)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_DUPLICATE_ID_1))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
 
-        // 두 번째 요청 성공
+        // thisIsDuplicateTestId2 검증 성공
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", userId2))
+                        .param("userId", "thisIsDuplicateTestId2"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        // 두 번째 요청 성공
+        // 칠판 생성 성공
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent2)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_DUPLICATE_ID_2))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    @DisplayName("칠판 id 중복 검증 - 실패")
+    @DisplayName("칠판 id 중복 검증 - 400")
     @Transactional
-    void checkDuplicateUserIdTestFail() throws Exception{
-
-        String userId = "thisIsDuplicateTestId";
-
-        // JSON 데이터 문자열
-        String jsonContent = "{"
-                + "\"blackboard\" : {"
-                + "    \"title\" : \"제목제목\","
-                + "    \"introduction\" : \"소개소개\","
-                + "    \"userId\" : "
-                + "\"thisIsDuplicateTestId\","
-                + "    \"openDate\" : \"2024-02-20T18:00:00\""
-                + "},"
-                + "\"stickers\" : ["
-                + "]"
-                + "}";
-
+    void checkDuplicateUserId_400() throws Exception{
 
         // 첫 번째 요청 성공
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", userId))
+                        .param("userId", "thisIsDuplicateTestId"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        // 칠판 만들기
+        // 칠판 만들기 성공
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_DUPLICATE_BAD))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
         // 두 번째 요청 실패
         mvc.perform(MockMvcRequestBuilders.get("/api/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", userId))
+                        .param("userId", "thisIsDuplicateTestId"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
-        // 칠판 만들기
+        // 칠판 만들기 실패
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                        .content(BLACKBOARD_DUPLICATE_BAD))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
     @Test
-    @DisplayName("칠판과 편지 조회 - 성공")
+    @DisplayName("칠판과 편지 조회 - 200")
     @Transactional
-    void readBlackBoardAndLettersSuccess() throws Exception {
+    void readBlackBoardAndLetters_200() throws Exception {
 
-        // JSON 데이터 문자열
-        String jsonContent = "{"
-                + "\"blackboard\" : {"
-                + "    \"title\" : \"제목제목\","
-                + "    \"introduction\" : \"소개소개\","
-                + "    \"userId\" : "
-                + "\"test1\","
-                + "    \"openDate\" : \"2024-02-20T18:00:00\""
-                + "},"
-                + "\"stickers\" : ["
-                + "]"
-                + "}";
-
-        final String letter1 = "{"
-                + "\"letter\" : {"
-                + "    \"nickname\":\"닉네임~\","
-                + "    \"content\":\"내용입니다\","
-                + "    \"font\":\"Alien\","
-                + "    \"align\":\"center\""
-                + " },"
-                + "\"stickers\":["
-                + " ]"
-                + "}";
-
-        // 칠판 만들기
+        // 칠판 만들기 성공
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                        .content(READ_BLACKBOARD_AND_LETTER))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        // 편지 등록
+        // 편지 등록 성공
         mvc.perform(MockMvcRequestBuilders.post("/api/letter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", "test1")
-                        .content(letter1))
+                        .content(LETTER))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -274,16 +166,14 @@ public class BlackBoardControllerTest {
 
 
     @Test
-    @DisplayName("칠판과 편지 조회 - 실패")
+    @DisplayName("칠판과 편지 조회 - 404")
     @Transactional
-    void readBlackBoardAndLettersFail() throws Exception {
-
+    void readBlackBoardAndLetters_404() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", "test1"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
-
     }
 
 }

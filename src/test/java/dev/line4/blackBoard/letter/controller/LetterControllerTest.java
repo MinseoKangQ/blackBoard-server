@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.transaction.Transactional;
 
+import static dev.line4.blackBoard.JsonString.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,39 +22,6 @@ class LetterControllerTest {
 
     @Autowired
     MockMvc mvc;
-
-    final String blackboard = "{"
-            + "\"blackboard\" : {"
-            + "    \"title\" : \"제목제목\","
-            + "    \"introduction\" : \"소개소개\","
-            + "    \"userId\" : \"this-is-test\","
-            + "    \"openDate\" : \"2024-02-20T18:00:00\""
-            + "},"
-            + "\"stickers\" : ["
-            + "]"
-            + "}";
-
-    final String letter1 = "{"
-            + "\"letter\" : {"
-            + "    \"nickname\":\"test1\","
-            + "    \"content\":\"내용입니다\","
-            + "    \"font\":\"Alien\","
-            + "    \"align\":\"center\""
-            + " },"
-            + "\"stickers\":["
-            + " ]"
-            + "}";
-
-    final String letter2 = "{"
-            + "\"letter\" : {"
-            + "    \"nickname\":\"test2\","
-            + "    \"content\":\"내용입니다\","
-            + "    \"font\":\"Alien\","
-            + "    \"align\":\"center\""
-            + " },"
-            + "\"stickers\":["
-            + " ]"
-            + "}";
 
     @Test
     @Transactional
@@ -81,10 +49,10 @@ class LetterControllerTest {
         registerBlackboard();
 
         // 편지 등록 1 - test1
-        registerLetter(letter1, "this-is-test");
+        registerLetter(LETTER_1);
 
         // 편지 등록 2 - test2
-        registerLetter(letter2, "this-is-test");
+        registerLetter(LETTER_2);
 
         // 응답 확인 - 편지 등록자가 2명이어야 함
         mvc.perform(MockMvcRequestBuilders.get("/api/writer")
@@ -120,7 +88,7 @@ class LetterControllerTest {
         mvc.perform(MockMvcRequestBuilders.post("/api/letter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", "this-is-test")
-                        .content(letter1))
+                        .content(LETTER_1))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -134,7 +102,7 @@ class LetterControllerTest {
         mvc.perform(MockMvcRequestBuilders.post("/api/letter")
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("userId", "tdkfjekwjkjeksjaljsdk")
-                        .content(letter1))
+                        .content(LETTER_1))
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
@@ -143,15 +111,15 @@ class LetterControllerTest {
     private void registerBlackboard() throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(blackboard))
+                        .content(BLACKBOARD))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
-    private void registerLetter(String letter, String userId) throws Exception {
+    private void registerLetter(String letter) throws Exception {
         mvc.perform(MockMvcRequestBuilders.post("/api/letter")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .param("userId", userId)
+                        .param("userId", "this-is-test")
                         .content(letter))
                 .andDo(print())
                 .andExpect(status().isOk());

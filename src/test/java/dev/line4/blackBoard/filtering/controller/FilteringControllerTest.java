@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static dev.line4.blackBoard.JsonString.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,56 +22,26 @@ class FilteringControllerTest {
     @Autowired
     MockMvc mvc;
 
-    String blackboardSContent = "{"
-            + "\"blackboard\" : {"
-            + "\"title\" : \"칠판 안녕\","
-            + "\"introduction\" : \"칠판 소개\","
-            + "\"userId\" : \"takaakkad\""
-            + "}"
-            + "}";
-
-    String blackboardFContent = "{"
-            + "\"blackboard\" : {"
-            + "\"title\" : \"칠판 시발\","
-            + "\"introduction\" : \"칠판 소개\","
-            + "\"userId\" : \"takaakkad\""
-            + "}"
-            + "}";
-
-    String letterSContent = "{"
-            + "\"letter\" : {"
-            + "\"nickname\":\"편지 작성자\","
-            + "\"content\":\"이건 텍스트 에\""
-            + "}"
-            + "}";
-
-    String letterFContent = "{"
-            + "\"letter\" : {"
-            + "\"nickname\":\"편지 작성자\","
-            + "\"content\":\"병신아\""
-            + "}"
-            + "}";
-
     @Test
     @Transactional
-    @DisplayName("칠판 비속어 필터링 - 성공")
-    void filterBlackBoardSuccess() throws Exception {
+    @DisplayName("칠판 비속어 필터링 - 200")
+    void filterBlackBoard_200() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.post("/api/filtering/blackboard")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(blackboardSContent))
+                .content(BLACKBOARD_SUCCESS_CONTENT))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     @Transactional
-    @DisplayName("칠판 비속어 필터링 - 실패")
-    void filterBlackBoardFail() throws Exception {
+    @DisplayName("칠판 비속어 필터링 - 400")
+    void filterBlackBoard_400() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.post("/api/filtering/blackboard")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(blackboardFContent))
+                        .content(BLACKBOARD_FAIL_CONTENT))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
@@ -79,29 +49,27 @@ class FilteringControllerTest {
 
     @Test
     @Transactional
-    @DisplayName("편지 비속어 필터링 - 성공")
-    void filterLetterSuccess() throws Exception {
+    @DisplayName("편지 비속어 필터링 - 200")
+    void filterLetter_200() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.post("/api/filtering/letter")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(letterSContent))
+                        .content(LETTER_SUCCESS_CONTENT))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     @Transactional
-    @DisplayName("편지 비속어 필터링 - 실패")
-    void filterLetterFail() throws Exception {
+    @DisplayName("편지 비속어 필터링 - 400")
+    void filterLetter_400() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders.post("/api/filtering/letter")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(letterFContent))
+                        .content(LETTER_FAIL_CONTENT))
                 .andDo(print())
                 .andExpect(status().isBadRequest());
 
     }
-
-
 
 }
