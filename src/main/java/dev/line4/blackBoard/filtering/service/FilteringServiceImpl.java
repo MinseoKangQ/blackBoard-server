@@ -15,6 +15,10 @@ public class FilteringServiceImpl implements FilteringService {
 
     private static final BadWordFiltering badWordFiltering = new BadWordFiltering();
 
+    static {
+        badWordFiltering.remove("보지");
+    }
+
     // 비속어 확인
     @Override
     public ResponseEntity<ApiResponse<?>> filterBlackBoard(FilterBlackBoardDto.Req req) {
