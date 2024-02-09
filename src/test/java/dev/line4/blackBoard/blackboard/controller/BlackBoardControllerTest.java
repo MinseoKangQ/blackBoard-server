@@ -13,6 +13,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class BlackBoardControllerTest {
@@ -214,6 +217,73 @@ public class BlackBoardControllerTest {
                         .content(jsonContent)) // JSON 데이터 요청 본문에 포함
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("칠판과 편지 조회 - 성공")
+    @Transactional
+    void readBlackBoardAndLettersSuccess() throws Exception {
+
+        // JSON 데이터 문자열
+        String jsonContent = "{"
+                + "\"blackboard\" : {"
+                + "    \"title\" : \"제목제목\","
+                + "    \"introduction\" : \"소개소개\","
+                + "    \"userId\" : "
+                + "\"test1\","
+                + "    \"openDate\" : \"2024-02-20T18:00:00\""
+                + "},"
+                + "\"stickers\" : ["
+                + "]"
+                + "}";
+
+        final String letter1 = "{"
+                + "\"letter\" : {"
+                + "    \"nickname\":\"닉네임~\","
+                + "    \"content\":\"내용입니다\","
+                + "    \"font\":\"Alien\","
+                + "    \"align\":\"center\""
+                + " },"
+                + "\"stickers\":["
+                + " ]"
+                + "}";
+
+        // 칠판 만들기
+        mvc.perform(MockMvcRequestBuilders.post("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonContent)) // JSON 데이터 요청 본문에 포함
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        // 편지 등록
+        mvc.perform(MockMvcRequestBuilders.post("/api/letter")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", "test1")
+                        .content(letter1))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        // 응답 확인
+        mvc.perform(MockMvcRequestBuilders.get("/api/blackboard")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("userId", "test1"))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+    }
+
+
+    @Test
+    @DisplayName("칠판과 편지 조회 - 실패")
+    @Transactional
+    void readBlackBoardAndLettersFail() throws Exception {
+
+        mvc.perform(MockMvcRequestBuilders.get("/api/blackboard")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("userId", "test1"))
+                .andDo(print())
+                .andExpect(status().isNotFound());
+
     }
 
 }
