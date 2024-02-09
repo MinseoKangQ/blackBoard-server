@@ -46,6 +46,10 @@ dependencies {
     // http to https
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
+    // log
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
+
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     annotationProcessor 'org.projectlombok:lombok'
