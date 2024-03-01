@@ -15,6 +15,10 @@ public class FilteringServiceImpl implements FilteringService {
 
     private static final BadWordFiltering badWordFiltering = new BadWordFiltering();
 
+    static {
+        badWordFiltering.remove("보지");
+    }
+
     // 비속어 확인
     @Override
     public ResponseEntity<ApiResponse<?>> filterBlackBoard(FilterBlackBoardDto.Req req) {
@@ -54,6 +58,6 @@ public class FilteringServiceImpl implements FilteringService {
     // 비속어 확인 로직
     private boolean containsProfanity(String text) {
         // 여기에 실제 비속어 확인 로직을 추가
-        return badWordFiltering.check(text);
+        return badWordFiltering.blankCheck(text);
     }
 }

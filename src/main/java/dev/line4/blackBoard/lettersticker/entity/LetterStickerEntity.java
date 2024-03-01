@@ -29,10 +29,9 @@ import lombok.Setter;
 @Table(name = "LETTER_STICKERS")
 public class LetterStickerEntity extends BaseEntity {
 
-    @Id
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "letter_sticker_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long letterStickerId;
+    private Long id;
 
     @Column(name = "num")
     private Long num;

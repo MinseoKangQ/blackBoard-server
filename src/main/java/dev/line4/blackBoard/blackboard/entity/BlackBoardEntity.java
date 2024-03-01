@@ -28,6 +28,7 @@ url text
 public class BlackBoardEntity extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "blackboard_id")
     private Long id;
 
     @Column(length = 50)
@@ -43,8 +44,8 @@ public class BlackBoardEntity extends BaseEntity {
     private String openDate;
 
     @Builder.Default
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<BlackBoardStickerEntity> blackBoardStickers = new ArrayList<>(); // 초기화 추가;
+    @OneToMany(mappedBy = "blackboard", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<BlackBoardStickerEntity> blackBoardStickers = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "blackboard", cascade = CascadeType.REMOVE, orphanRemoval = true)

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.17'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'jacoco'
 }
 
 group = 'dev.line4'
@@ -41,6 +42,13 @@ dependencies {
 
     // cors
     implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // http to https
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // log
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'ch.qos.logback:logback-core:1.2.3'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
